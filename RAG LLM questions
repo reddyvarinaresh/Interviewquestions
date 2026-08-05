@@ -1,1 +1,736 @@
 
+A. End-to-End Architecture
+Design an enterprise RAG chatbot from document upload to final response.
+Explain the offline ingestion path and online query path separately.
+Where does the orchestrator fit in a RAG architecture?
+How would you design RAG for 100 million users?
+How would you design RAG for 10 million documents?
+How would you support multiple tenants and multiple business domains?
+Where would you use synchronous versus asynchronous processing?
+What components should be stateless?
+What information should be stored persistently?
+How would you deploy the application on Kubernetes or OpenShift?
+What is the role of API Gateway, Load Balancer, Service and Pods?
+How would you separate ingestion, retrieval and generation services?
+Would you build a modular monolith or microservices?
+How would you support web, mobile, Teams and voice channels?
+How would you design active-active multi-region deployment?
+What are the single points of failure?
+How would you calculate capacity before production launch?
+How would you define SLAs, SLOs and error budgets?
+How would you design graceful degradation?
+What would you build first for an MVP, and what would you add for production?
+A production RAG design is expected to cover ingestion, chunking, embedding, indexing, retrieval, reranking, prompt assembly, generation, evaluation and operations. [docs.vllm.ai], [glassdoor.com], [crackmlinterview.com]
+________________________________________
+B. End-to-End Latency
+A RAG response takes eight seconds. How do you identify the bottleneck?
+Which component normally contributes the most latency?
+How do you measure latency for every stage?
+What is P50, P95 and P99 latency?
+Why is average latency insufficient?
+What is Time to First Token?
+What is total completion time?
+Does streaming reduce actual or perceived latency?
+How do you create a latency budget?
+Which operations can run in parallel?
+Which operations must remain sequential?
+How do additional network hops affect latency?
+How do you reduce authentication and authorization latency?
+How do you reduce query-rewriting latency?
+Should every query be rewritten using an LLM?
+How do you reduce embedding latency?
+How do you reduce vector-search latency?
+How do you reduce reranking latency?
+How do you reduce OpenAI generation latency?
+How do you reduce output-generation time?
+How does input context length affect latency?
+How does output length affect latency?
+When should you use a smaller/faster model?
+How do you route simple and complex questions to different models?
+How do you reduce cold-start latency?
+How do you reduce cross-region network latency?
+How do connection pooling and keep-alive help?
+How do you detect queue waiting time?
+Why can autoscaling fail to reduce latency?
+How do retries increase total latency?
+What causes good P50 but bad P99?
+How do you troubleshoot occasional 30-second responses?
+How would you achieve a P95 below three seconds?
+How do you improve latency without hurting accuracy?
+How do you prove that a latency optimization worked?
+OpenAI’s production recommendations emphasize fewer model calls, shorter outputs, parallel execution, suitable smaller models, prompt caching and avoiding LLM calls when deterministic logic is sufficient. [learn.microsoft.com], [docs.vllm.ai]
+________________________________________
+C. Document Ingestion
+How do documents enter the RAG system?
+How do you extract content from scanned PDFs?
+How do you preserve tables, headings, forms and page numbers?
+How do you handle Word, Excel, PDF, images and HTML differently?
+What happens when OCR produces incorrect text?
+How do you detect corrupt or unsupported files?
+How do you remove repeated headers and footers?
+How do you remove duplicate documents?
+How do you detect duplicate or near-duplicate chunks?
+How do you attach metadata to each chunk?
+How do you preserve document lineage?
+How do you process millions of documents?
+Why should ingestion happen asynchronously?
+How do queues and workers help ingestion?
+How do you retry failed documents?
+What is a dead-letter queue?
+How do you handle partially processed documents?
+How do you monitor ingestion backlog?
+How do you handle a new version of an existing document?
+How do you remove a deleted document from the vector index?
+How do you ensure eventual consistency with the source system?
+How do you handle SharePoint, Blob Storage and database sources?
+How do you handle document-level permissions during ingestion?
+How do you prevent malicious documents from entering the index?
+How do you validate ingestion quality before activating an index?
+________________________________________
+D. Chunking
+Why is chunking required?
+What happens if chunks are too small?
+What happens if chunks are too large?
+How do you choose chunk size?
+What is fixed-size chunking?
+What is recursive chunking?
+What is semantic chunking?
+What is structure-aware chunking?
+What is sliding-window chunking?
+Why is chunk overlap used?
+How much overlap should be used?
+How do you chunk tables?
+How do you chunk question-and-answer documents?
+How do you chunk legal or policy documents?
+How do you chunk source code?
+What is parent-child chunking?
+What is a parent-document retriever?
+How do you preserve surrounding context?
+How do you handle an answer split across adjacent chunks?
+How do you measure whether the chunking strategy is effective?
+How do you compare two chunking strategies?
+When should the same system use different chunking strategies?
+How do chunk size and overlap affect cost?
+How do you re-index safely after changing chunking?
+What should be included in chunking_version?
+Chunk size creates a precision-versus-context trade-off; production systems typically evaluate chunking against representative documents and expected queries rather than selecting a universal size. [cloudinsight.cc], [crackmlinterview.com], [velocode.ai]
+________________________________________
+E. Embeddings
+What is an embedding in layman terms?
+Why must query and document embeddings use compatible models?
+How do you select an embedding model?
+General-purpose versus domain-specific embedding—when to use each?
+What is embedding dimension?
+Does a larger dimension always improve retrieval?
+What is cosine similarity?
+What is dot-product similarity?
+What is Euclidean distance?
+How do you evaluate an embedding model?
+What is embedding drift?
+What happens when the embedding model changes?
+Can old and new embeddings be kept in the same index?
+How do you migrate to a new embedding model?
+Why version the embedding model?
+How do you batch document embedding requests?
+How do you handle embedding API rate limits?
+What is an embedding cache?
+When is an embedding cache useful?
+What should an embedding-cache key contain?
+When should embedding cache be invalidated?
+Should sensitive questions be stored in readable cache keys?
+How do multilingual embeddings work?
+How do you test retrieval across multiple languages?
+How do you minimize embedding cost during re-indexing?
+________________________________________
+F. Vector Database and Indexing
+Why is a vector database needed?
+Why not store vectors in a normal SQL database?
+Can PostgreSQL with pgvector be sufficient?
+Can Redis be used as a vector database?
+Redis versus Azure AI Search—how do you choose?
+Pinecone versus Milvus versus Qdrant versus OpenSearch?
+Managed versus self-hosted vector database?
+What is exact nearest-neighbour search?
+What is approximate nearest-neighbour search?
+What is HNSW?
+What is IVF?
+What is product quantization?
+How do ANN indexes trade recall for speed?
+What is index build time?
+How do index parameters affect latency and recall?
+How would you store metadata with vectors?
+What is metadata-filter selectivity?
+Why can restrictive filters make some vector searches slower?
+How do you scale to millions or billions of vectors?
+What is partitioning?
+What is sharding?
+What is replication?
+Partitions versus replicas—what problem does each solve?
+How would you partition by tenant, region or document type?
+Should every tenant have a separate index?
+What problems arise from thousands of small indexes?
+How do you handle a very large “noisy neighbour” tenant?
+How do you rebalance shards?
+How do you back up and restore a vector index?
+How do you perform zero-downtime index migration?
+How do you monitor index health?
+How do you identify hot partitions?
+How do you estimate vector-index memory?
+How do you handle index corruption?
+What is the source of truth: vector DB or document repository?
+________________________________________
+G. Retrieval
+Explain dense retrieval.
+Explain sparse/keyword retrieval.
+What is BM25?
+What is hybrid search?
+Why can pure vector search miss exact terms?
+Why can keyword search miss semantic meaning?
+How do you combine keyword and vector results?
+What is Reciprocal Rank Fusion?
+How do you select Top-K?
+What happens when Top-K is too small?
+What happens when Top-K is too large?
+How do you use metadata filtering?
+Should filtering happen before or after vector search?
+How do you handle plan, year, network and state qualifiers?
+How do you handle exact product identifiers?
+How do you search multiple data sources?
+Should multiple searches run sequentially or in parallel?
+What is query expansion?
+What is query rewriting?
+What is multi-query retrieval?
+What is HyDE?
+What is hierarchical retrieval?
+What is iterative retrieval?
+What is corrective RAG?
+How do you handle vague questions?
+How do you handle multi-part questions?
+How do you handle follow-up questions?
+How do you retrieve tables with numeric information?
+How do you prevent cross-tenant retrieval?
+How do you determine that retrieval returned no useful evidence?
+What fallback is used when vector search returns no result?
+What if the vector database times out?
+When is filtered keyword search a safe fallback?
+How do you prevent fallback from searching unauthorized content?
+How do you measure retrieval quality?
+What is Recall@K?
+What is Precision@K?
+What is Mean Reciprocal Rank?
+What is NDCG?
+How do you debug retrieval miss?
+How do you distinguish retrieval failure from generation failure?
+Hybrid search, metadata filtering and semantic ranking are major production mechanisms for handling conversational queries, exact identifiers, large corpora and permission-aware enterprise retrieval. [onyxdata.co.uk], [glassdoor.com], [crackmlinterview.com]
+________________________________________
+H. Reranking
+What is reranking?
+Why is reranking needed after vector search?
+Vector similarity versus reranker score—what is the difference?
+What is a cross-encoder reranker?
+What is an LLM-based reranker?
+When would you avoid an LLM reranker?
+How many candidate chunks should be reranked?
+How many final chunks should be sent to the LLM?
+Why not rerank all documents?
+How does reranking affect latency?
+How do you reduce reranking latency?
+What is conditional reranking?
+When can reranking be skipped?
+Should reranking occur before or after security filtering?
+How do you cache reranked results?
+What should a reranking cache key include?
+What happens when the reranker model changes?
+How do you evaluate whether reranking improves retrieval?
+What if reranking improves accuracy but violates the latency SLA?
+How do you combine business-rule boosting with model reranking?
+How do you boost current-year and exact-plan matches?
+What happens if the reranker ranks an unauthorized chunk highly?
+________________________________________
+I. Caching
+Why use caching in RAG?
+What is exact-answer cache?
+What is semantic-answer cache?
+What is embedding cache?
+What is retrieval cache?
+What is reranking cache?
+What is prompt caching?
+In what order should the caches be checked?
+Which cache gives the greatest latency saving?
+How do you create a safe exact-cache key?
+Why should tenant and document version be in the key?
+Why use a question hash?
+What is cache hit versus cache miss?
+How do you choose TTL?
+Should all answers use the same TTL?
+What happens after TTL expires?
+Does the system automatically regenerate after expiry?
+What is event-driven cache invalidation?
+How do document updates invalidate caches?
+How do prompt changes invalidate answer cache?
+How do embedding changes invalidate embedding cache?
+How do reranker changes invalidate retrieval cache?
+How do you prevent stale answers?
+What is cache stampede?
+How do Redis locks or single-flight prevent stampede?
+What is stale-while-revalidate?
+When is stale-while-revalidate unsafe?
+How do you apply TTL jitter?
+What data should never be cached?
+How do you cache member-specific information safely?
+How do you prevent User A from receiving User B’s answer?
+What is semantic-cache similarity threshold?
+Why is similarity score alone unsafe?
+How do you check intent and business context?
+Redis versus local memory cache?
+Redis versus Memcached?
+Can the vector DB also serve as semantic cache?
+Can Redis serve as both exact and vector cache?
+How do you measure cache effectiveness?
+When can a high cache-hit rate still be dangerous?
+OpenAI also provides prompt caching for repeated exact prompt prefixes; that differs from application-owned answer, semantic, embedding and retrieval caches. [docs.vllm.ai]
+________________________________________
+J. Prompt and Context Construction
+How do you construct a grounded RAG prompt?
+How do you clearly separate instructions from retrieved evidence?
+How do you tell the model not to use outside knowledge?
+How do you handle insufficient evidence?
+How do you ask the model to produce citations?
+How do you prevent citation hallucination?
+How do you arrange multiple retrieved chunks?
+Should retrieved chunks be ordered by score or document order?
+How do you avoid exceeding the context window?
+How do you select only necessary conversation history?
+How do you summarize older chat history?
+How do you prevent history from changing the user’s current intent?
+What should happen when two retrieved documents conflict?
+How do you prioritize current documents over old documents?
+How do you enforce structured JSON output?
+How do you validate model output against a schema?
+Temperature zero—does it guarantee identical output?
+How do prompt versions work?
+How do you test a prompt change before production?
+How do you prevent prompt growth over time?
+When should deterministic code replace prompt logic?
+When should business rules run before or after the LLM?
+________________________________________
+K. Hallucination and Grounding
+What is hallucination?
+Does RAG completely eliminate hallucination?
+Why does hallucination happen despite correct retrieval?
+How do you identify unsupported claims?
+What is groundedness or faithfulness?
+How do you calculate hallucination rate?
+How do you validate every claim against retrieved evidence?
+What should happen when no evidence is found?
+How do you implement an abstain/not-found response?
+How do retrieval thresholds help?
+Why can a similarity threshold be unreliable?
+How do citations reduce risk?
+How do you validate citation correctness?
+How do conflicting sources affect groundedness?
+How do you prevent the LLM from combining incompatible plan details?
+When is human review required?
+How do you manage high-risk healthcare or financial answers?
+What is the difference between factual correctness and faithfulness?
+Can an answer be faithful but still wrong?
+How do you detect omissions or incomplete answers?
+________________________________________
+L. OpenAI / Azure OpenAI Integration
+How does a RAG application call OpenAI?
+Do you need vLLM when using Azure OpenAI?
+Who manages the GPU and model-serving infrastructure?
+How do you secure API credentials?
+API keys versus Managed Identity?
+How do you manage model deployment names and versions?
+How do RPM and TPM limits differ?
+How do you handle HTTP 429 errors?
+How do you implement exponential backoff with jitter?
+Which errors should be retried?
+Which errors should not be retried?
+How do you limit concurrent model calls?
+How do you prevent 20 application Pods from exhausting quota?
+How do you estimate token demand?
+How do you request or provision capacity?
+How do you choose between standard and provisioned throughput?
+How do you route between model deployments?
+How do you implement regional failover?
+How do you control model-call timeout?
+How do you stream responses?
+How do you cancel generation when the user disconnects?
+How do you handle content-filter responses?
+How do you monitor input and output token consumption?
+How do you prevent one tenant from consuming all quota?
+How do you reduce repeated prompt-processing cost?
+What is prompt caching, and when does it work?
+OpenAI rate limits can apply across requests and tokens, and production clients must control concurrency, retries and traffic before calls reach the model provider. [docs.vllm.ai], [clemenssiebler.com]
+________________________________________
+M. Scaling and Load Management
+What questions should you ask before designing for 100 million users?
+Daily users versus concurrent users—why does it matter?
+How do you estimate peak requests per second?
+How do you estimate questions per user session?
+How does cache-hit rate affect capacity?
+How do you calculate model token demand?
+How does HPA scale RAG API Pods?
+What metric should HPA use: CPU, memory or request count?
+Why may CPU be a poor scaling metric for I/O-heavy RAG APIs?
+What is queue-based autoscaling?
+When should node autoscaling occur?
+What happens if Pods scale but OpenAI quota does not?
+What is backpressure?
+What is a bounded queue?
+When should requests be rejected instead of queued?
+How do you implement per-user and per-tenant rate limits?
+What is load shedding?
+How do you prevent noisy-neighbour problems?
+How do you scale Redis?
+How do you manage Redis connection pools?
+How do you scale vector-search replicas?
+How do you scale ingestion separately from online queries?
+How do you test performance before launch?
+What is load testing versus stress testing?
+What is soak testing?
+How do you test sudden traffic spikes?
+How do you design regional traffic routing?
+How do you protect downstream services during traffic spikes?
+________________________________________
+N. Reliability and Failure Handling
+What happens when Redis is unavailable?
+What happens when vector search is unavailable?
+What happens when OpenAI is unavailable?
+What happens when the authentication service is slow?
+What happens when the document store is unavailable?
+Should the whole chatbot fail if cache fails?
+What is timeout?
+What is bounded retry?
+What is exponential backoff?
+What is jitter?
+What is a circuit breaker?
+What is bulkhead isolation?
+What is graceful degradation?
+What is a fallback model?
+What is a fallback search strategy?
+When is returning cached stale data acceptable?
+How do you prevent cascading failure?
+Why are unlimited retries dangerous?
+How do you handle partial responses?
+How do you handle a user disconnect during streaming?
+How do you ensure idempotency for retries?
+How do you prevent duplicate ingestion jobs?
+How do you recover an incomplete indexing job?
+How do you perform disaster recovery?
+What are RPO and RTO?
+Which components require multi-zone deployment?
+How do you test failure recovery?
+How do chaos tests help?
+How do you prevent a fallback from lowering security?
+What should users see during a downstream-service failure?
+________________________________________
+O. Security and Privacy
+How do you authenticate users?
+How do you authorize document access?
+What is RBAC?
+What is ABAC?
+What is document-level security trimming?
+Why must authorization happen during retrieval?
+How do you isolate tenants?
+Shared versus separate index for tenant isolation?
+How do you prevent cross-tenant retrieval?
+What is prompt injection?
+What is indirect prompt injection?
+How can a malicious document attack the RAG application?
+How do you treat retrieved content as untrusted data?
+How do you prevent system-prompt leakage?
+How do you prevent secret leakage?
+How do you protect PHI and PII?
+What should not be logged?
+How do you redact sensitive values?
+How do you encrypt cached content?
+How do you secure Redis and vector DB?
+How do private endpoints help?
+How do you manage secrets?
+How do you rotate credentials?
+How do you validate model-generated URLs or SQL?
+What is improper output handling?
+What is excessive agency?
+How do you restrict tools available to an agent?
+When is human approval required?
+How do you prevent data poisoning?
+How do you secure the ingestion supply chain?
+How do you retain audit trails without storing sensitive prompts?
+How do you apply retention and deletion policies?
+How do you support right-to-delete requests?
+How do you perform adversarial and red-team testing?
+OWASP identifies prompt injection, sensitive-information disclosure, supply-chain risk, data/model poisoning, improper output handling and excessive agency among major LLM-application risks. [learn.microsoft.com], [learn.microsoft.com]
+________________________________________
+P. Conversation and Memory
+How do you store chat sessions?
+What is short-term versus long-term memory?
+How do you resolve “What about family?” using conversation history?
+How do you convert follow-ups into standalone search queries?
+How much conversation history should be sent to the model?
+How do you summarize old history?
+How do you handle topic change?
+How do you prevent one conversation leaking into another?
+How do you expire conversation state?
+Should conversation history be included in cache keys?
+How do you support users across multiple devices?
+How do you delete conversation history?
+How do you handle multiple users sharing one channel?
+How do you differentiate chatbot memory from enterprise knowledge?
+How do you prevent incorrect remembered information?
+When should the chatbot ask a clarification question?
+How do you handle interruptions and corrections?
+How do you measure multi-turn success?
+________________________________________
+Q. Evaluation
+How do you evaluate a RAG system?
+Why is final-answer accuracy insufficient?
+How do you evaluate ingestion quality?
+How do you evaluate chunking?
+How do you evaluate embeddings?
+How do you evaluate retrieval independently?
+How do you evaluate reranking?
+How do you evaluate generation?
+What is Recall@K?
+What is Precision@K?
+What is MRR?
+What is NDCG?
+What is context precision?
+What is context recall?
+What is answer relevance?
+What is faithfulness?
+What is groundedness?
+What is citation accuracy?
+What is hallucination rate?
+What is abstention accuracy?
+How do you build a golden dataset?
+What should be included in each golden record?
+How do you create negative and adversarial test cases?
+How do you evaluate multi-turn conversations?
+How do you combine human and automated evaluation?
+Can an LLM judge another LLM?
+What are the limitations of LLM-as-judge?
+How do you prevent evaluator bias?
+How do you perform regression testing?
+What quality gates should block a release?
+How do you perform online A/B testing?
+What is shadow testing?
+How do you evaluate quality versus latency versus cost?
+How do user feedback signals improve the system?
+How do you diagnose whether failures come from retrieval or generation?
+Why can high faithfulness still produce an unhelpful answer?
+Senior interviews increasingly emphasize evaluation, security and production synchronization—not merely implementing a vector search demo. [interviewbaba.com], [velocode.ai], [myengineer...ngpath.dev]
+________________________________________
+R. Observability and Monitoring
+What should be logged for every RAG request?
+What is a trace ID?
+How do you trace Gateway → Redis → Search → Reranker → OpenAI?
+What metrics should be collected at each stage?
+How do you measure Time to First Token?
+How do you monitor P50, P95 and P99?
+How do you monitor cache hit and miss rates?
+How do you monitor search latency?
+How do you monitor retrieval-quality drift?
+How do you monitor model latency?
+How do you monitor 429 and timeout rates?
+How do you monitor queue depth?
+How do you monitor cost per request?
+How do you monitor cost per successful answer?
+How do you monitor token consumption per tenant?
+How do you detect prompt/model drift?
+How do you detect embedding drift?
+How do you detect stale documents?
+How do you detect cross-tenant security failures?
+What should trigger an alert?
+How do you create an operations dashboard?
+How do you investigate one slow request?
+How do you investigate one wrong answer?
+How do you monitor without logging sensitive content?
+How do you correlate user feedback with traces?
+How do you define production health for a probabilistic system?
+________________________________________
+S. Cost Optimization
+What are the major RAG cost components?
+How do you estimate cost per question?
+How do you reduce embedding cost?
+How do you reduce retrieval cost?
+How do you reduce reranking cost?
+How do you reduce OpenAI input-token cost?
+How do you reduce output-token cost?
+How do caches reduce cost?
+How does model routing reduce cost?
+When should a deterministic service replace an LLM call?
+How do you set a tenant budget?
+How do you detect abnormal token consumption?
+How do you prevent denial-of-wallet attacks?
+How do you choose between larger and smaller models?
+How do you compare managed versus self-hosted model cost?
+When does provisioned throughput become economical?
+How do you optimize expensive long-context requests?
+How do you calculate cost savings from cache hits?
+How do you balance quality, latency and cost?
+How do you prove that cost reduction did not reduce accuracy?
+Production RAG design is commonly evaluated as a three-way trade-off between quality, latency and cost. [developers...openai.com], [github.com], [prachub.com]
+________________________________________
+T. Deployment, CI/CD and Change Management
+How do you containerize a RAG application?
+How do you deploy it on Kubernetes or OpenShift?
+What belongs in Deployment, Service, Route and HPA YAML?
+How do you manage ConfigMaps and Secrets?
+How do you implement readiness and liveness probes?
+What should a RAG readiness probe verify?
+How do you perform rolling updates?
+How do you roll back a failed release?
+How do you version prompts?
+How do you version models?
+How do you version embeddings?
+How do you version indexes?
+How do you version the reranker?
+How do you version documents?
+How do you perform blue-green deployment?
+How do you perform canary deployment?
+How do you run offline evaluations in CI/CD?
+What quality gates should be required before deployment?
+How do you deploy a new index without downtime?
+How do you deploy a new embedding model?
+How do you synchronize application and index versions?
+What happens if an application expects V2 metadata but index V1 is active?
+How do feature flags help?
+How do you separate development, test and production data?
+How do you audit production configuration changes?
+How do you recover after a bad prompt release?
+________________________________________
+U. Agentic RAG and Tool Calling
+Standard RAG versus agentic RAG?
+When is agentic RAG unnecessary?
+How does an agent choose between search and an API?
+How do you prevent endless agent loops?
+How do you limit the number of tool calls?
+How do you set a time and token budget?
+How do you validate tool arguments?
+How do you prevent unauthorized tool execution?
+How do you handle tool failure?
+What is human-in-the-loop approval?
+How do you distinguish read-only from write tools?
+How do you prevent duplicate actions after retry?
+How do you observe multi-step agent execution?
+How do you evaluate agent success?
+How do you cache agent-tool results?
+How do you prevent prompt injection through tool output?
+How do you design MCP-based tool integration?
+How do you apply least privilege to MCP tools?
+How do you handle multiple agents?
+When should orchestration remain deterministic rather than agentic?
+________________________________________
+V. Practical Production Scenarios
+Correct documents exist, but the answer is wrong. How do you debug it?
+Correct chunk appears in Top 20 but not Top 5. What do you change?
+Correct chunk is Top 1, but the LLM ignores it. What do you check?
+Search is fast, but final response is slow. What do you check?
+OpenAI is fast, but end-to-end response is slow. What do you check?
+P50 is two seconds but P99 is twenty seconds. How do you investigate?
+Cache-hit rate suddenly drops after deployment. Why?
+Users receive old answers after documents update. How do you fix it?
+Two equivalent questions generate different answers. Is that always wrong?
+Semantic cache returns an incorrect answer. How do you debug it?
+Retrieval works for English but fails for another language. What changes?
+Exact plan names work, but natural questions fail. What do you improve?
+Natural questions work, but product codes fail. What do you improve?
+Tables are retrieved incorrectly. What ingestion changes are required?
+One tenant experiences slow search while others are normal. Why?
+Redis becomes unavailable during peak traffic. What happens?
+Vector DB becomes unavailable. What fallback is safe?
+Azure OpenAI returns 429. What happens next?
+Timeout retries create additional overload. How do you stop it?
+A new embedding model reduces retrieval accuracy. How do you roll back?
+The reranker improves quality but adds 500 ms. Keep it or remove it?
+HPA adds Pods, but latency continues rising. Why?
+Queue depth keeps growing. What actions are required?
+A user asks for data they are not authorized to access. Where is it blocked?
+A malicious document instructs the model to reveal secrets. How is it handled?
+No reliable evidence exists. What should the chatbot return?
+________________________________________
+The 25 Highest-Priority Questions
+If time is limited, prepare these first:
+Plain Text
+1
+1. Design an end-to-end production RAG system.
+2
+2. A RAG response takes eight seconds—how do you diagnose it?
+3
+3. How do you achieve a strict P95 latency target?
+4
+4. How do you scale RAG to millions of users and documents?
+5
+5. Why use metadata filtering + hybrid search + reranking?
+6
+6. How do you choose a chunking strategy?
+7
+7. How do you select and migrate embedding models?
+8
+8. How do you choose a vector database?
+9
+9. How do you decide Top-K before and after reranking?
+10
+10. How do you separate retrieval failure from generation failure?
+11
+11. What caches should RAG use, and in what order?
+12
+12. How do you safely create cache keys?
+13
+13. How do you invalidate cache after document changes?
+14
+14. How do you prevent cache stampede?
+15
+15. How do you manage OpenAI RPM/TPM and 429 errors?
+16
+16. Why is HPA alone insufficient?
+17
+17. How do you prevent hallucinations?
+18
+18. How do you apply tenant and document-level security?
+19
+19. How do you prevent prompt injection?
+20
+20. How do you evaluate retrieval and final answers independently?
+21
+21. What production metrics and traces do you maintain?
+22
+22. What happens when Redis, vector DB or OpenAI fails?
+23
+23. How do you version prompts, models, indexes and documents?
+24
+24. How do you balance quality, latency and cost?
+25
+25. Walk through how you debug one incorrect production answer.
+
+
+
+
+1. Design an end-to-end production RAG system.
+2. A RAG response takes eight seconds—how do you diagnose it?
+3. How do you achieve a strict P95 latency target?
+4. How do you scale RAG to millions of users and documents?
+5. Why use metadata filtering + hybrid search + reranking?
+6. How do you choose a chunking strategy?
+7. How do you select and migrate embedding models?
+8. How do you choose a vector database?
+9. How do you decide Top-K before and after reranking?
+10. How do you separate retrieval failure from generation failure?
+11. What caches should RAG use, and in what order?
+12. How do you safely create cache keys?
+13. How do you invalidate cache after document changes?
+14. How do you prevent cache stampede?
+15. How do you manage OpenAI RPM/TPM and 429 errors?
+16. Why is HPA alone insufficient?
+17. How do you prevent hallucinations?
+18. How do you apply tenant and document-level security?
+19. How do you prevent prompt injection?
+20. How do you evaluate retrieval and final answers independently?
+21. What production metrics and traces do you maintain?
+22. What happens when Redis, vector DB or OpenAI fails?
+23. How do you version prompts, models, indexes and documents?
+24. How do you balance quality, latency and cost?
+25. Walk through how you debug one incorrect production answer.
