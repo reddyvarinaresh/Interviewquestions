@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DSA Frequency by Company — Captive & Product Companies</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252840;--accent:#7c3aed;--accent2:#06b6d4;--green:#10b981;--warn:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--border:#2d3748}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif}
+  header{background:linear-gradient(135deg,#1a1d2e,#252840);border-bottom:1px solid var(--border);padding:2rem;text-align:center}
+  header h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  header p{color:var(--muted);margin-top:.5rem;font-size:.9rem}
+  .container{max-width:1200px;margin:2rem auto;padding:0 2rem 4rem}
+  .tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem}
+  .tab{padding:.6rem 1.25rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:.82rem;transition:all .2s}
+  .tab:hover,.tab.active{border-color:var(--accent);color:var(--accent);background:rgba(124,58,237,.1)}
+  .section{display:none}
+  .section.active{display:block}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+  @media(max-width:800px){.grid2{grid-template-columns:1fr}}
+  .company-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:2rem}
+  .company-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem}
+  .company-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+  .company-header h2{font-size:1.1rem;font-weight:700}
+  .company-header p{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+  .q-table{width:100%;border-collapse:collapse}
+  .q-table th{background:var(--surface2);padding:.65rem 1rem;text-align:left;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .q-table td{padding:.6rem 1rem;border-bottom:1px solid var(--border);font-size:.82rem}
+  .q-table tr:last-child td{border-bottom:none}
+  .q-table tr:hover td{background:rgba(124,58,237,.03)}
+  .badge{display:inline-block;padding:.15rem .5rem;border-radius:10px;font-size:.68rem;font-weight:700}
+  .b-vh{background:rgba(239,68,68,.12);color:#fca5a5}
+  .b-h{background:rgba(245,158,11,.12);color:#fcd34d}
+  .b-m{background:rgba(16,185,129,.12);color:#6ee7b7}
+  .b-e{background:rgba(16,185,129,.15);color:var(--green);font-size:.7rem;padding:.2rem .55rem;border-radius:6px}
+  .b-me{background:rgba(245,158,11,.15);color:var(--warn);font-size:.7rem;padding:.2rem .55rem;border-radius:6px}
+  .b-ha{background:rgba(239,68,68,.15);color:var(--red);font-size:.7rem;padding:.2rem .55rem;border-radius:6px}
+  .tier-t1{background:rgba(239,68,68,.12);color:#fca5a5;font-size:.65rem;padding:.1rem .4rem;border-radius:10px}
+  .tier-t2{background:rgba(245,158,11,.12);color:#fcd34d;font-size:.65rem;padding:.1rem .4rem;border-radius:10px}
+  .comparison-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+  .comparison-table th{background:var(--surface2);padding:1rem 1.5rem;text-align:left;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .comparison-table td{padding:.85rem 1.5rem;border-bottom:1px solid var(--border);font-size:.85rem}
+  .comparison-table tr:last-child td{border-bottom:none}
+  .comparison-table td:first-child{font-weight:700;color:var(--accent2)}
+  h3{font-size:1.1rem;font-weight:700;margin:2rem 0 1rem;color:var(--text)}
+  .strategy-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+  .strategy-box h4{font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--accent2)}
+  .strategy-step{display:flex;gap:1rem;align-items:flex-start;margin-bottom:.75rem;font-size:.85rem}
+  .step-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0}
+  .info-band{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);border-radius:10px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.85rem;color:var(--muted)}
+  .info-band strong{color:var(--accent)}
+  .nav-bar{background:var(--surface);border-top:1px solid var(--border);padding:1rem 2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem}
+  .nav-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem 1.25rem;color:var(--text);text-decoration:none;font-size:.82rem;transition:all .2s}
+  .nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🏢 DSA Frequency by Company</h1>
+  <p>Exactly what each company type asks · Captive Centers vs Product Companies · Based on real candidate reports</p>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('captive')">🏛️ Captive Centers</button>
+    <button class="tab" onclick="showTab('product')">🚀 Product Companies</button>
+    <button class="tab" onclick="showTab('company-wise')">🎯 Company-Wise Top 20</button>
+    <button class="tab" onclick="showTab('comparison')">⚖️ Comparison</button>
+    <button class="tab" onclick="showTab('strategy')">📅 Study Strategy</button>
+  </div>
+
+  <!-- CAPTIVE CENTERS -->
+  <div id="captive" class="section active">
+    <div class="info-band"><strong>Captive Centers (TCS, Infosys, Accenture, Deloitte, Optum, Carelon, HCL, Wipro, Cognizant)</strong> focus on fundamentals. Easy to Medium difficulty. Working code > optimal code.</div>
+
+    <div class="company-card">
+      <div class="company-header">
+        <div class="company-icon" style="background:rgba(239,68,68,.15)">🔴</div>
+        <div>
+          <h2>Tier 1 — Must Know (90% Probability)</h2>
+          <p>These appear in virtually every captive center first round</p>
+        </div>
+      </div>
+      <table class="q-table">
+        <thead><tr><th>#</th><th>Question</th><th>Category</th><th>Difficulty</th><th>Frequency</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Reverse array</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>2</td><td>Reverse string</td><td>Strings</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>3</td><td>Palindrome check</td><td>Strings</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>4</td><td>Anagram check</td><td>Strings</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>5</td><td>First non-repeating character</td><td>Strings</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>6</td><td>Character frequency counter</td><td>Strings</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>7</td><td>Remove duplicates from array</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>8</td><td>Find duplicates in array</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>9</td><td>Move zeros to end</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>10</td><td>Find missing number (1 to N)</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>11</td><td>Majority element (Boyer-Moore)</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>12</td><td>Second largest element</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>13</td><td>Rotate array by k</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>14</td><td>Merge two sorted arrays</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>15</td><td>Two Sum (Hash Map)</td><td>Hashing</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>16</td><td>Fibonacci (iterative)</td><td>Math</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>17</td><td>Prime number check</td><td>Math</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>18</td><td>Factorial</td><td>Math</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>19</td><td>Power of number (fast exponentiation)</td><td>Math</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>20</td><td>GCD / LCM</td><td>Math</td><td><span class="b-e">Easy</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>21</td><td>Valid parentheses</td><td>Stack</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>22</td><td>Implement Stack / Queue</td><td>Stack/Queue</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>23</td><td>Reverse Linked List</td><td>LinkedList</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>24</td><td>Detect cycle in linked list</td><td>LinkedList</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>25</td><td>Merge two sorted lists</td><td>LinkedList</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>26</td><td>Binary tree inorder traversal</td><td>Trees</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>27</td><td>Maximum depth of binary tree</td><td>Trees</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>28</td><td>Binary search</td><td>Searching</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>29</td><td>Kadane's algorithm (max subarray)</td><td>Arrays</td><td><span class="b-me">Medium</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>30</td><td>Climbing stairs</td><td>DP</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="company-card">
+      <div class="company-header">
+        <div class="company-icon" style="background:rgba(245,158,11,.15)">🟡</div>
+        <div>
+          <h2>Tier 2 — Frequently Asked (60% Probability)</h2>
+          <p>Expect these in round 2 or senior captive center roles</p>
+        </div>
+      </div>
+      <table class="q-table">
+        <thead><tr><th>#</th><th>Question</th><th>Category</th><th>Difficulty</th></tr></thead>
+        <tbody>
+          <tr><td>31</td><td>Bubble sort / Merge sort</td><td>Sorting</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>32</td><td>Three Sum</td><td>Hashing</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>33</td><td>Count pairs with sum</td><td>Hashing</td><td><span class="b-e">Easy</span></td></tr>
+          <tr><td>34</td><td>Intersection / Union of arrays</td><td>Arrays</td><td><span class="b-e">Easy</span></td></tr>
+          <tr><td>35</td><td>Next greater element</td><td>Stack</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>36</td><td>Min Stack</td><td>Stack</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>37</td><td>Remove Nth from end (LL)</td><td>LinkedList</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>38</td><td>Palindrome Linked List</td><td>LinkedList</td><td><span class="b-e">Easy</span></td></tr>
+          <tr><td>39</td><td>Add two numbers (LL)</td><td>LinkedList</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>40</td><td>Level order traversal</td><td>Trees</td><td><span class="b-e">Easy</span></td></tr>
+          <tr><td>41</td><td>Balanced binary tree</td><td>Trees</td><td><span class="b-e">Easy</span></td></tr>
+          <tr><td>42</td><td>Validate BST</td><td>Trees</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>43</td><td>LCA of binary tree</td><td>Trees</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>44</td><td>House Robber</td><td>DP</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>45</td><td>Coin change (min coins)</td><td>DP</td><td><span class="b-me">Medium</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PRODUCT COMPANIES -->
+  <div id="product" class="section">
+    <div class="info-band"><strong>Product Companies (Flipkart, Razorpay, PayTM, PhonePe, CRED, Swiggy, Zomato, Ola, Meesho, Groww, Nykaa, Amazon India)</strong> focus on optimization and edge cases. Medium to Hard. Optimal solution expected.</div>
+
+    <div class="company-card">
+      <div class="company-header">
+        <div class="company-icon" style="background:rgba(239,68,68,.15)">🔴</div>
+        <div>
+          <h2>Tier 1 — Must Know (80% Probability)</h2>
+          <p>Core questions that appear in almost every product company first round</p>
+        </div>
+      </div>
+      <table class="q-table">
+        <thead><tr><th>#</th><th>Question</th><th>Category</th><th>Difficulty</th><th>Frequency</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Two Sum</td><td>Hashing</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>2</td><td>Reverse Linked List</td><td>LinkedList</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>3</td><td>Binary tree inorder traversal</td><td>Trees</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>4</td><td>Level order traversal (BFS)</td><td>Trees</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>5</td><td>Merge sorted arrays</td><td>Arrays</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>6</td><td>Valid parentheses</td><td>Stack</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>7</td><td>Longest substring without repeating chars</td><td>Sliding Window</td><td><span class="b-me">Medium</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>8</td><td>Kadane's algorithm (max subarray)</td><td>Arrays</td><td><span class="b-me">Medium</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>9</td><td>Binary search (all variants)</td><td>Searching</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>10</td><td>Detect cycle in linked list (Floyd's)</td><td>LinkedList</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>11</td><td>LCA of binary tree</td><td>Trees</td><td><span class="b-me">Medium</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>12</td><td>Number of islands (DFS/BFS)</td><td>Graphs</td><td><span class="b-me">Medium</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>13</td><td>Coin change (min coins)</td><td>DP</td><td><span class="b-me">Medium</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>14</td><td>House Robber</td><td>DP</td><td><span class="b-me">Medium</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>15</td><td>Climbing stairs</td><td>DP</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>16</td><td>Longest common subsequence</td><td>DP</td><td><span class="b-me">Medium</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>17</td><td>Edit distance (Levenshtein)</td><td>DP</td><td><span class="b-ha">Hard</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>18</td><td>Unique paths (grid DP)</td><td>DP</td><td><span class="b-me">Medium</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>19</td><td>Word break</td><td>DP</td><td><span class="b-me">Medium</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>20</td><td>Course schedule I & II (Topo sort)</td><td>Graphs</td><td><span class="b-me">Medium</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>21</td><td>DFS / BFS on graph</td><td>Graphs</td><td><span class="b-e">Easy</span></td><td><span class="badge b-vh">Very High</span></td></tr>
+          <tr><td>22</td><td>Rotting oranges (multi-source BFS)</td><td>Graphs</td><td><span class="b-me">Medium</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>23</td><td>LRU Cache design</td><td>Design</td><td><span class="b-me">Medium</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>24</td><td>Kth largest element</td><td>Heap</td><td><span class="b-me">Medium</span></td><td><span class="badge b-h">High</span></td></tr>
+          <tr><td>25</td><td>Serialize/deserialize binary tree</td><td>Trees</td><td><span class="b-ha">Hard</span></td><td><span class="badge b-h">High</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="company-card">
+      <div class="company-header">
+        <div class="company-icon" style="background:rgba(245,158,11,.15)">🟡</div>
+        <div>
+          <h2>Tier 2 — Frequently Asked (50% Probability)</h2>
+          <p>Round 2 and senior-level product company questions</p>
+        </div>
+      </div>
+      <table class="q-table">
+        <thead><tr><th>#</th><th>Question</th><th>Category</th><th>Difficulty</th></tr></thead>
+        <tbody>
+          <tr><td>26</td><td>Three Sum</td><td>Hashing</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>27</td><td>Container with most water</td><td>Two Pointers</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>28</td><td>Merge K sorted lists</td><td>Heap</td><td><span class="b-ha">Hard</span></td></tr>
+          <tr><td>29</td><td>Find median from data stream</td><td>Heap</td><td><span class="b-ha">Hard</span></td></tr>
+          <tr><td>30</td><td>Binary tree max path sum</td><td>Trees</td><td><span class="b-ha">Hard</span></td></tr>
+          <tr><td>31</td><td>Search in rotated sorted array</td><td>Binary Search</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>32</td><td>Trapping rain water</td><td>Two Pointers</td><td><span class="b-ha">Hard</span></td></tr>
+          <tr><td>33</td><td>Permutations / Subsets</td><td>Backtracking</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>34</td><td>Combination sum</td><td>Backtracking</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>35</td><td>Longest increasing subsequence</td><td>DP</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>36</td><td>0/1 Knapsack</td><td>DP</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>37</td><td>Dijkstra's shortest path</td><td>Graphs</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>38</td><td>Pacific Atlantic water flow</td><td>Graphs</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>39</td><td>Daily temperatures (monotonic stack)</td><td>Stack</td><td><span class="b-me">Medium</span></td></tr>
+          <tr><td>40</td><td>Implement Trie</td><td>Trie</td><td><span class="b-me">Medium</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COMPANY-WISE -->
+  <div id="company-wise" class="section">
+    <div class="grid2">
+      <div class="company-card">
+        <div class="company-header" style="background:rgba(99,102,241,.08)">
+          <div class="company-icon" style="background:rgba(99,102,241,.2)">🔵</div>
+          <div><h2>TCS Top 20</h2><p>Easy–Medium | Focus on fundamentals</p></div>
+        </div>
+        <table class="q-table"><thead><tr><th>#</th><th>Question</th></tr></thead><tbody>
+          <tr><td>1</td><td>Reverse array</td></tr><tr><td>2</td><td>Palindrome string</td></tr>
+          <tr><td>3</td><td>Anagrams</td></tr><tr><td>4</td><td>Fibonacci</td></tr>
+          <tr><td>5</td><td>Prime check</td></tr><tr><td>6</td><td>Factorial</td></tr>
+          <tr><td>7</td><td>Merge sorted arrays</td></tr><tr><td>8</td><td>Two Sum</td></tr>
+          <tr><td>9</td><td>Valid parentheses</td></tr><tr><td>10</td><td>Reverse Linked List</td></tr>
+          <tr><td>11</td><td>Detect cycle (Floyd's)</td></tr><tr><td>12</td><td>Merge sorted lists</td></tr>
+          <tr><td>13</td><td>Binary tree inorder</td></tr><tr><td>14</td><td>Max depth of tree</td></tr>
+          <tr><td>15</td><td>Balanced binary tree</td></tr><tr><td>16</td><td>Bubble sort</td></tr>
+          <tr><td>17</td><td>Binary search</td></tr><tr><td>18</td><td>Character frequency</td></tr>
+          <tr><td>19</td><td>Remove duplicates</td></tr><tr><td>20</td><td>Rotate array</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="company-card">
+        <div class="company-header" style="background:rgba(16,185,129,.08)">
+          <div class="company-icon" style="background:rgba(16,185,129,.2)">🟢</div>
+          <div><h2>Infosys Top 20</h2><p>Easy–Medium | String heavy</p></div>
+        </div>
+        <table class="q-table"><thead><tr><th>#</th><th>Question</th></tr></thead><tbody>
+          <tr><td>1</td><td>Reverse string</td></tr><tr><td>2</td><td>Palindrome check</td></tr>
+          <tr><td>3</td><td>First non-repeating char</td></tr><tr><td>4</td><td>Find duplicates</td></tr>
+          <tr><td>5</td><td>Move zeros to end</td></tr><tr><td>6</td><td>Missing number</td></tr>
+          <tr><td>7</td><td>Majority element</td></tr><tr><td>8</td><td>Second largest</td></tr>
+          <tr><td>9</td><td>GCD / LCM</td></tr><tr><td>10</td><td>Power of number</td></tr>
+          <tr><td>11</td><td>Stack implementation</td></tr><tr><td>12</td><td>Queue implementation</td></tr>
+          <tr><td>13</td><td>Balanced brackets</td></tr><tr><td>14</td><td>Reverse Linked List</td></tr>
+          <tr><td>15</td><td>Palindrome Linked List</td></tr><tr><td>16</td><td>Add two numbers (LL)</td></tr>
+          <tr><td>17</td><td>Delete duplicates (LL)</td></tr><tr><td>18</td><td>Merge sort</td></tr>
+          <tr><td>19</td><td>Binary search</td></tr><tr><td>20</td><td>Validate BST</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="company-card">
+        <div class="company-header" style="background:rgba(245,158,11,.08)">
+          <div class="company-icon" style="background:rgba(245,158,11,.2)">🟠</div>
+          <div><h2>Accenture Top 20</h2><p>Easy–Medium | Array & LL focus</p></div>
+        </div>
+        <table class="q-table"><thead><tr><th>#</th><th>Question</th></tr></thead><tbody>
+          <tr><td>1</td><td>Reverse array</td></tr><tr><td>2</td><td>Palindrome string</td></tr>
+          <tr><td>3</td><td>Anagrams</td></tr><tr><td>4</td><td>Remove duplicates</td></tr>
+          <tr><td>5</td><td>Find duplicates</td></tr><tr><td>6</td><td>Merge sorted arrays</td></tr>
+          <tr><td>7</td><td>Two Sum</td></tr><tr><td>8</td><td>Fibonacci</td></tr>
+          <tr><td>9</td><td>Prime check</td></tr><tr><td>10</td><td>Valid parentheses</td></tr>
+          <tr><td>11</td><td>Reverse Linked List</td></tr><tr><td>12</td><td>Detect cycle</td></tr>
+          <tr><td>13</td><td>Merge sorted lists</td></tr><tr><td>14</td><td>Binary tree inorder</td></tr>
+          <tr><td>15</td><td>Max depth of tree</td></tr><tr><td>16</td><td>Balanced tree</td></tr>
+          <tr><td>17</td><td>LCA of binary tree</td></tr><tr><td>18</td><td>Bubble sort</td></tr>
+          <tr><td>19</td><td>Binary search</td></tr><tr><td>20</td><td>Character frequency</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="company-card">
+        <div class="company-header" style="background:rgba(239,68,68,.08)">
+          <div class="company-icon" style="background:rgba(239,68,68,.2)">🔴</div>
+          <div><h2>Optum / Carelon / Elevance Top 20</h2><p>Easy–Medium | Healthcare + DS focus</p></div>
+        </div>
+        <table class="q-table"><thead><tr><th>#</th><th>Question</th></tr></thead><tbody>
+          <tr><td>1</td><td>Reverse array</td></tr><tr><td>2</td><td>Palindrome string</td></tr>
+          <tr><td>3</td><td>Anagrams</td></tr><tr><td>4</td><td>Remove duplicates</td></tr>
+          <tr><td>5</td><td>Find duplicates</td></tr><tr><td>6</td><td>Move zeros</td></tr>
+          <tr><td>7</td><td>Missing number</td></tr><tr><td>8</td><td>Majority element</td></tr>
+          <tr><td>9</td><td>Second largest</td></tr><tr><td>10</td><td>Merge sorted arrays</td></tr>
+          <tr><td>11</td><td>Two Sum</td></tr><tr><td>12</td><td>Fibonacci</td></tr>
+          <tr><td>13</td><td>Prime check</td></tr><tr><td>14</td><td>Factorial</td></tr>
+          <tr><td>15</td><td>Valid parentheses</td></tr><tr><td>16</td><td>Reverse Linked List</td></tr>
+          <tr><td>17</td><td>Detect cycle</td></tr><tr><td>18</td><td>Merge sorted lists</td></tr>
+          <tr><td>19</td><td>Binary tree inorder</td></tr><tr><td>20</td><td>Max depth of tree</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="company-card">
+        <div class="company-header" style="background:rgba(124,58,237,.08)">
+          <div class="company-icon" style="background:rgba(124,58,237,.2)">🟣</div>
+          <div><h2>Flipkart / Razorpay / CRED Top 20</h2><p>Medium–Hard | Product company round 1</p></div>
+        </div>
+        <table class="q-table"><thead><tr><th>#</th><th>Question</th></tr></thead><tbody>
+          <tr><td>1</td><td>Two Sum + variations</td></tr><tr><td>2</td><td>Longest substring (sliding window)</td></tr>
+          <tr><td>3</td><td>Binary search variants</td></tr><tr><td>4</td><td>Number of islands</td></tr>
+          <tr><td>5</td><td>Course schedule (topo sort)</td></tr><tr><td>6</td><td>LRU Cache</td></tr>
+          <tr><td>7</td><td>Coin change</td></tr><tr><td>8</td><td>House Robber</td></tr>
+          <tr><td>9</td><td>Merge K sorted lists</td></tr><tr><td>10</td><td>Kth largest element</td></tr>
+          <tr><td>11</td><td>Reverse linked list</td></tr><tr><td>12</td><td>Level order traversal</td></tr>
+          <tr><td>13</td><td>Max subarray (Kadane's)</td></tr><tr><td>14</td><td>Longest increasing subseq</td></tr>
+          <tr><td>15</td><td>Word break</td></tr><tr><td>16</td><td>Combination sum</td></tr>
+          <tr><td>17</td><td>Rotting oranges (BFS)</td></tr><tr><td>18</td><td>Daily temperatures</td></tr>
+          <tr><td>19</td><td>Partition equal subset sum</td></tr><tr><td>20</td><td>Design Twitter / autocomplete</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="company-card">
+        <div class="company-header" style="background:rgba(6,182,212,.08)">
+          <div class="company-icon" style="background:rgba(6,182,212,.2)">🔵</div>
+          <div><h2>Goldman Sachs / Barclays Tech Top 20</h2><p>Medium–Hard | Finance + optimization heavy</p></div>
+        </div>
+        <table class="q-table"><thead><tr><th>#</th><th>Question</th></tr></thead><tbody>
+          <tr><td>1</td><td>Trapping rain water</td></tr><tr><td>2</td><td>Median from data stream</td></tr>
+          <tr><td>3</td><td>Find median of two sorted arrays</td></tr><tr><td>4</td><td>Largest rectangle in histogram</td></tr>
+          <tr><td>5</td><td>Binary tree max path sum</td></tr><tr><td>6</td><td>Serialize/deserialize tree</td></tr>
+          <tr><td>7</td><td>LRU Cache</td></tr><tr><td>8</td><td>LFU Cache</td></tr>
+          <tr><td>9</td><td>Edit distance</td></tr><tr><td>10</td><td>Burst balloons</td></tr>
+          <tr><td>11</td><td>Alien dictionary</td></tr><tr><td>12</td><td>Dijkstra's shortest path</td></tr>
+          <tr><td>13</td><td>Word ladder</td></tr><tr><td>14</td><td>Merge K sorted lists</td></tr>
+          <tr><td>15</td><td>Sliding window maximum</td></tr><tr><td>16</td><td>Stock buy/sell k times</td></tr>
+          <tr><td>17</td><td>N-Queens</td></tr><tr><td>18</td><td>Sudoku solver</td></tr>
+          <tr><td>19</td><td>Count of smaller numbers</td></tr><tr><td>20</td><td>Regular expression matching</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON -->
+  <div id="comparison" class="section">
+    <h3>⚖️ Captive Centers vs Product Companies</h3>
+    <table class="comparison-table">
+      <thead><tr><th>Aspect</th><th>🏛️ Captive Centers</th><th>🚀 Product Companies</th></tr></thead>
+      <tbody>
+        <tr><td>Difficulty</td><td>Easy to Medium</td><td>Medium to Hard</td></tr>
+        <tr><td>Time per question</td><td>30–45 min</td><td>45–60 min</td></tr>
+        <tr><td>Expected approach</td><td>Working solution is enough</td><td>Optimal solution required</td></tr>
+        <tr><td>Most asked topics</td><td>Arrays, Strings, LinkedLists, Math</td><td>DP, Graphs, Trees, Sliding Window</td></tr>
+        <tr><td>Rarely asked topics</td><td>Advanced DP, Complex Graphs</td><td>Basic math, Simple arrays</td></tr>
+        <tr><td>Interview style</td><td>Straightforward questions</td><td>Follow-ups, optimization rounds</td></tr>
+        <tr><td>Code quality bar</td><td>Working code</td><td>Clean, optimized, edge cases</td></tr>
+        <tr><td>Questions to master</td><td>Q1–90 (Phases 1 + 2 part 1)</td><td>Q1–180 (All phases)</td></tr>
+        <tr><td>Key differentiator</td><td>Speed + correctness</td><td>Optimal complexity + explanation</td></tr>
+        <tr><td>System design asked?</td><td>Rarely (senior roles only)</td><td>Yes, from round 2+</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STRATEGY -->
+  <div id="strategy" class="section">
+    <div class="grid2">
+      <div class="strategy-box">
+        <h4>🏛️ For Captive Centers (TCS, Infosys, Accenture, Optum, Carelon)</h4>
+        <div class="strategy-step"><div class="step-num">1</div><div><strong>Week 1:</strong> Master Q1–50 (Foundations) — Arrays, Strings, Hashing, Math</div></div>
+        <div class="strategy-step"><div class="step-num">2</div><div><strong>Week 2:</strong> Master Q51–90 (Sorting, Searching, Stacks, LinkedLists)</div></div>
+        <div class="strategy-step"><div class="step-num">3</div><div><strong>Week 3:</strong> Review Q1–90 twice, focus on edge cases</div></div>
+        <div class="strategy-step"><div class="step-num">4</div><div><strong>Practice:</strong> 5–10 Easy problems daily on LeetCode</div></div>
+        <div class="strategy-step"><div class="step-num">5</div><div><strong>Skip:</strong> Q121–180 unless targeting senior architect roles</div></div>
+      </div>
+      <div class="strategy-box">
+        <h4>🚀 For Product Companies (Flipkart, Razorpay, PayTM, Swiggy, CRED)</h4>
+        <div class="strategy-step"><div class="step-num">1</div><div><strong>Week 1–2:</strong> Master Q1–50 (must be fast, < 15 min each)</div></div>
+        <div class="strategy-step"><div class="step-num">2</div><div><strong>Week 3–4:</strong> Master Q51–120 (Sliding Window + Binary Search are key)</div></div>
+        <div class="strategy-step"><div class="step-num">3</div><div><strong>Week 5–6:</strong> Master Q121–180 (Trees + DP are most asked)</div></div>
+        <div class="strategy-step"><div class="step-num">4</div><div><strong>Practice:</strong> 3–5 Medium problems daily + 1 Hard per week</div></div>
+        <div class="strategy-step"><div class="step-num">5</div><div><strong>Mock:</strong> 2–3 mock interviews per week from week 4</div></div>
+      </div>
+    </div>
+
+    <div class="strategy-box">
+      <h4>⏱️ Time-boxed plans based on weeks available</h4>
+      <table class="q-table">
+        <thead><tr><th>Time Available</th><th>Target Companies</th><th>Questions to Cover</th><th>Strategy</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1 Week</strong></td><td>Captive (TCS/Infosys)</td><td>Q1–30 (Arrays + Strings)</td><td>Practice each 2–3 times. Focus on correctness</td></tr>
+          <tr><td><strong>2 Weeks</strong></td><td>Captive + mid-tier</td><td>Q1–50 (Phase 1 complete)</td><td>Practice each 2x. Add Q51–70 (Sorting)</td></tr>
+          <tr><td><strong>3 Weeks</strong></td><td>All captive + entry product</td><td>Q1–90</td><td>Phase 1 + Phase 2 part 1. Practice 2–3x each</td></tr>
+          <tr><td><strong>4–6 Weeks</strong></td><td>All companies</td><td>Q1–180 (all phases)</td><td>Full roadmap. Mock interviews from week 4</td></tr>
+          <tr><td><strong>8+ Weeks</strong></td><td>Senior product + Finance tech</td><td>Q1–180 + LeetCode extras</td><td>Multiple passes + system design + mock daily</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <a class="nav-btn" href="04_DSA_Advanced_Q121_180.html">← Phase 3: Advanced</a>
+  <a class="nav-btn" href="00_Master_Index.html">🏠 Master Index</a>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Interview Preparation — Master Index | DS · ML · GenAI · DSA</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252840;--accent:#7c3aed;--accent2:#06b6d4;--green:#10b981;--warn:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--border:#2d3748}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,#0d0f1a 0%,#1a1d2e 40%,#1a0d2e 100%);padding:4rem 2rem;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(124,58,237,.12) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(6,182,212,.08) 0%,transparent 60%)}
+  .hero-inner{position:relative;max-width:900px;margin:0 auto}
+  .hero h1{font-size:2.6rem;font-weight:900;background:linear-gradient(135deg,#a78bfa,#67e8f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+  .hero p{color:var(--muted);margin-top:1rem;font-size:1rem;max-width:600px;margin-inline:auto;line-height:1.6}
+  .hero-tags{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem}
+  .hero-tag{background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#c4b5fd;font-size:.75rem;padding:.35rem .85rem;border-radius:20px}
+  .progress-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;max-width:700px;margin:2rem auto 0}
+  .ps-box{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center}
+  .ps-box .n{font-size:1.8rem;font-weight:800}
+  .ps-box .l{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:.3rem}
+  .ps-box.dsa .n{color:var(--accent2)}
+  .ps-box.done .n{color:var(--green)}
+  .ps-box.days .n{color:var(--warn)}
+  .ps-box.pct .n{color:var(--accent)}
+
+  /* CONTAINER */
+  .container{max-width:1200px;margin:0 auto;padding:2rem 2rem 6rem}
+
+  /* SECTION HEADERS */
+  .section-title{font-size:1.1rem;font-weight:800;margin:2.5rem 0 1rem;color:var(--text);display:flex;align-items:center;gap:.75rem}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* DSA GRID */
+  .dsa-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .dsa-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;text-decoration:none;color:var(--text);transition:all .25s;display:flex;flex-direction:column;gap:.6rem;position:relative;overflow:hidden}
+  .dsa-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;transition:height .2s}
+  .dsa-card:hover{border-color:rgba(124,58,237,.4);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+  .dsa-card:hover::before{height:4px}
+  .card-emoji{font-size:1.8rem}
+  .card-title{font-size:1rem;font-weight:700}
+  .card-desc{font-size:.78rem;color:var(--muted);line-height:1.5}
+  .card-meta{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:auto;padding-top:.5rem}
+  .chip{font-size:.68rem;padding:.2rem .55rem;border-radius:10px}
+  .chip-q{background:rgba(6,182,212,.1);color:#67e8f9}
+  .chip-t{background:rgba(124,58,237,.1);color:#c4b5fd}
+  .chip-d{background:rgba(245,158,11,.1);color:#fcd34d}
+
+  /* TOPIC GRID */
+  .topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+  .topic-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:all .2s;overflow:hidden}
+  .topic-card:hover{border-color:rgba(124,58,237,.4);transform:translateY(-2px)}
+  .topic-header{padding:1rem 1.25rem;display:flex;align-items:center;gap:.75rem}
+  .topic-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+  .topic-title{font-weight:700;font-size:.92rem}
+  .topic-files{padding:.5rem 1.25rem 1rem;display:flex;flex-direction:column;gap:.25rem}
+  .file-link{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--muted);padding:.25rem 0;border-top:1px solid var(--border)}
+  .file-link:first-child{border-top:none}
+  .file-link .fname{color:var(--accent2)}
+
+  /* QUICK LINKS */
+  .quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+  .quick-link{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;text-decoration:none;color:var(--text);transition:all .2s;display:flex;align-items:center;gap:.75rem;font-size:.82rem}
+  .quick-link:hover{border-color:var(--accent);color:var(--accent);background:rgba(124,58,237,.05)}
+  .quick-link .ico{font-size:1.1rem}
+
+  /* STUDY PLAN TABLE */
+  table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+  th{background:var(--surface2);padding:.85rem 1.25rem;text-align:left;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  td{padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.82rem}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(124,58,237,.03)}
+  .status-done{color:var(--green);font-weight:700}
+  .status-next{color:var(--warn);font-weight:700}
+  .status-pending{color:var(--muted)}
+
+  /* TIER BADGES */
+  .t1{background:rgba(239,68,68,.12);color:#fca5a5;font-size:.68rem;padding:.15rem .5rem;border-radius:10px;font-weight:700}
+  .t2{background:rgba(245,158,11,.12);color:#fcd34d;font-size:.68rem;padding:.15rem .5rem;border-radius:10px;font-weight:700}
+  .t3{background:rgba(16,185,129,.12);color:#6ee7b7;font-size:.68rem;padding:.15rem .5rem;border-radius:10px;font-weight:700}
+
+  /* FOOTER */
+  footer{text-align:center;padding:2rem;color:var(--muted);font-size:.78rem;border-top:1px solid var(--border)}
+  footer a{color:var(--accent2);text-decoration:none}
+
+  @media(max-width:700px){.hero h1{font-size:1.8rem}.progress-summary{grid-template-columns:repeat(2,1fr)}.dsa-grid,.topic-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Interview Preparation Hub</h1>
+    <p>12 Years Experience · Data Science · GenAI · ML Engineering · Captive & Product Companies · Non-FAANG Focus</p>
+    <div class="hero-tags">
+      <span class="hero-tag">🐍 Python Core</span>
+      <span class="hero-tag">🧠 DSA — 180 Questions</span>
+      <span class="hero-tag">🤖 GenAI / RAG / Agentic</span>
+      <span class="hero-tag">🏗️ System Design</span>
+      <span class="hero-tag">🏢 Company-Specific</span>
+      <span class="hero-tag">☁️ Production / Cloud</span>
+    </div>
+    <div class="progress-summary">
+      <div class="ps-box dsa"><div class="n">180</div><div class="l">DSA Questions</div></div>
+      <div class="ps-box done"><div class="n" id="total-done">0</div><div class="l">Total Done</div></div>
+      <div class="ps-box days"><div class="n">6</div><div class="l">Week Plan</div></div>
+      <div class="ps-box pct"><div class="n" id="total-pct">0%</div><div class="l">Progress</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- DSA GUIDES -->
+  <div class="section-title">📚 DSA Interactive Guides</div>
+  <div class="dsa-grid">
+    <a class="dsa-card" href="01_DSA_Roadmap.html" style="--c:#7c3aed">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7c3aed,#06b6d4)"></div>
+      <div class="card-emoji">🗺️</div>
+      <div class="card-title">DSA Learning Roadmap</div>
+      <div class="card-desc">6-week structured plan · Complexity reference · 35-minute interview framework · When to use which pattern</div>
+      <div class="card-meta">
+        <span class="chip chip-t">START HERE</span>
+        <span class="chip chip-d">6 Weeks</span>
+      </div>
+    </a>
+
+    <a class="dsa-card" href="02_DSA_Beginner_Q1_50.html">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7c3aed,#a855f7)"></div>
+      <div class="card-emoji">📦</div>
+      <div class="card-title">Phase 1: Beginner — Q1 to Q50</div>
+      <div class="card-desc">Arrays · Strings · Hashing · Two Pointers · Basic Math | Progress tracking + clickable solutions</div>
+      <div class="card-meta">
+        <span class="chip chip-q">50 Questions</span>
+        <span class="chip chip-t">Week 1–2</span>
+        <span class="t1">Tier 1</span>
+      </div>
+    </a>
+
+    <a class="dsa-card" href="03_DSA_Intermediate_Q51_120.html">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#06b6d4,#10b981)"></div>
+      <div class="card-emoji">⚙️</div>
+      <div class="card-title">Phase 2: Intermediate — Q51 to Q120</div>
+      <div class="card-desc">Sorting · Searching · Stacks & Queues · LinkedLists · Sliding Window · Two Pointers</div>
+      <div class="card-meta">
+        <span class="chip chip-q">70 Questions</span>
+        <span class="chip chip-t">Week 3–4</span>
+        <span class="t1">Tier 1–2</span>
+      </div>
+    </a>
+
+    <a class="dsa-card" href="04_DSA_Advanced_Q121_180.html">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f59e0b,#ef4444)"></div>
+      <div class="card-emoji">🚀</div>
+      <div class="card-title">Phase 3: Advanced — Q121 to Q180</div>
+      <div class="card-desc">Trees & BST · Graphs · Dynamic Programming · Greedy | Senior differentiator questions</div>
+      <div class="card-meta">
+        <span class="chip chip-q">60 Questions</span>
+        <span class="chip chip-t">Week 5–6</span>
+        <span class="t2">Senior Level</span>
+      </div>
+    </a>
+
+    <a class="dsa-card" href="05_DSA_Frequency_by_Company.html">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#10b981,#06b6d4)"></div>
+      <div class="card-emoji">🏢</div>
+      <div class="card-title">Frequency by Company</div>
+      <div class="card-desc">TCS · Infosys · Accenture · Optum · Carelon · Flipkart · Razorpay · CRED · PayTM — exactly what each asks</div>
+      <div class="card-meta">
+        <span class="chip chip-q">6 Company Types</span>
+        <span class="chip chip-d">Real Reports</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- TOPIC FOLDERS -->
+  <div class="section-title">📂 Knowledge Base — All Topics</div>
+  <div class="topic-grid">
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-icon" style="background:rgba(6,182,212,.15)">🐍</div>
+        <div>
+          <div class="topic-title">Python Core</div>
+          <div style="font-size:.7rem;color:var(--muted)">01_Python_Core folder</div>
+        </div>
+      </div>
+      <div class="topic-files">
+        <div class="file-link"><span>📄</span><span class="fname">01_python_core_fundamentals.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">02_python_advanced_concepts.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">03_python_oops.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">04_python_data_structures.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">05_python_functional.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">...and 5 more files</span></div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-icon" style="background:rgba(124,58,237,.15)">🧠</div>
+        <div>
+          <div class="topic-title">DSA Questions (MD Source)</div>
+          <div style="font-size:.7rem;color:var(--muted)">02_DSA_Questions folder</div>
+        </div>
+      </div>
+      <div class="topic-files">
+        <div class="file-link"><span>📄</span><span class="fname">37_dsa_learning_roadmap.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">38_dsa_questions_beginner_q1_50.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">39_dsa_questions_intermediate_q51_90.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">40_dsa_questions_intermediate_q91_120.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">41_dsa_questions_advanced_q121_180.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">42_dsa_frequency_by_company.md</span></div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-icon" style="background:rgba(16,185,129,.15)">🤖</div>
+        <div>
+          <div class="topic-title">GenAI / RAG / Agentic</div>
+          <div style="font-size:.7rem;color:var(--muted)">03_GenAI_RAG_Agentic folder</div>
+        </div>
+      </div>
+      <div class="topic-files">
+        <div class="file-link"><span>📄</span><span class="fname">21_genai_core_concepts.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">22_rag_system_design.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">23_agentic_frameworks.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">24_llm_fine_tuning.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">25_vector_databases.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">...and more files</span></div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-icon" style="background:rgba(245,158,11,.15)">🏗️</div>
+        <div>
+          <div class="topic-title">System Design</div>
+          <div style="font-size:.7rem;color:var(--muted)">04_System_Design folder</div>
+        </div>
+      </div>
+      <div class="topic-files">
+        <div class="file-link"><span>📄</span><span class="fname">30_system_design_fundamentals.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">31_system_design_advanced.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">32_ml_system_design.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">33_distributed_systems.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">...and more files</span></div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-icon" style="background:rgba(239,68,68,.15)">👤</div>
+        <div>
+          <div class="topic-title">By Experience Level</div>
+          <div style="font-size:.7rem;color:var(--muted)">05_By_Experience_Level folder</div>
+        </div>
+      </div>
+      <div class="topic-files">
+        <div class="file-link"><span>📄</span><span class="fname">43_senior_lead_architect.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">44_5_to_8_years.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">45_8_to_12_years.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">28_must_prepare_first.md</span></div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-icon" style="background:rgba(6,182,212,.15)">🏢</div>
+        <div>
+          <div class="topic-title">By Company / Domain</div>
+          <div style="font-size:.7rem;color:var(--muted)">06_By_Company_Domain folder</div>
+        </div>
+      </div>
+      <div class="topic-files">
+        <div class="file-link"><span>📄</span><span class="fname">46_captive_centers.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">47_product_companies.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">48_healthcare_domain.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">49_finance_domain.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">42_dsa_frequency_by_company.md</span></div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-icon" style="background:rgba(124,58,237,.15)">☁️</div>
+        <div>
+          <div class="topic-title">Production / Cloud / DevOps</div>
+          <div style="font-size:.7rem;color:var(--muted)">07_Production_Cloud_DevOps folder</div>
+        </div>
+      </div>
+      <div class="topic-files">
+        <div class="file-link"><span>📄</span><span class="fname">35_production_ml.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">36_cloud_devops.md</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">...FastAPI, Docker, Kubernetes</span></div>
+        <div class="file-link"><span>📄</span><span class="fname">...MLOps, CI/CD, monitoring</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- QUICK ACCESS -->
+  <div class="section-title">⚡ Quick Access — Priority Files</div>
+  <div class="quick-grid">
+    <a class="quick-link" href="01_DSA_Roadmap.html"><span class="ico">🗺️</span>DSA Roadmap</a>
+    <a class="quick-link" href="02_DSA_Beginner_Q1_50.html"><span class="ico">📦</span>Q1–50 Beginner</a>
+    <a class="quick-link" href="03_DSA_Intermediate_Q51_120.html"><span class="ico">⚙️</span>Q51–120 Intermediate</a>
+    <a class="quick-link" href="04_DSA_Advanced_Q121_180.html"><span class="ico">🚀</span>Q121–180 Advanced</a>
+    <a class="quick-link" href="05_DSA_Frequency_by_Company.html"><span class="ico">🏢</span>Frequency by Company</a>
+    <a class="quick-link" href="../02_DSA_Questions/37_dsa_learning_roadmap.md"><span class="ico">📄</span>DSA Roadmap (MD)</a>
+    <a class="quick-link" href="../05_By_Experience_Level/28_must_prepare_first.md"><span class="ico">⭐</span>Must Prepare First</a>
+    <a class="quick-link" href="../01_Python_Core/01_python_core_fundamentals.md"><span class="ico">🐍</span>Python Core</a>
+    <a class="quick-link" href="../03_GenAI_RAG_Agentic/21_genai_core_concepts.md"><span class="ico">🤖</span>GenAI Core</a>
+    <a class="quick-link" href="../04_System_Design/30_system_design_fundamentals.md"><span class="ico">🏗️</span>System Design</a>
+    <a class="quick-link" href="../06_By_Company_Domain/46_captive_centers.md"><span class="ico">🏛️</span>Captive Centers</a>
+    <a class="quick-link" href="../06_By_Company_Domain/47_product_companies.md"><span class="ico">🚀</span>Product Companies</a>
+  </div>
+
+  <!-- 6-WEEK PLAN -->
+  <div class="section-title">📅 6-Week Master Study Plan</div>
+  <table>
+    <thead>
+      <tr><th>Week</th><th>Focus</th><th>Questions</th><th>Hours</th><th>Key Topics</th><th>Priority</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Week 1</strong></td>
+        <td>Foundations Part 1</td>
+        <td><a href="02_DSA_Beginner_Q1_50.html" style="color:var(--accent2);text-decoration:none">Q1–30</a></td>
+        <td>10h</td>
+        <td>Arrays · Strings</td>
+        <td><span class="t1">🔥 Critical</span></td>
+      </tr>
+      <tr>
+        <td><strong>Week 2</strong></td>
+        <td>Foundations Part 2</td>
+        <td><a href="02_DSA_Beginner_Q1_50.html" style="color:var(--accent2);text-decoration:none">Q31–50</a></td>
+        <td>10h</td>
+        <td>Hashing · Math · Two Pointers</td>
+        <td><span class="t1">🔥 Critical</span></td>
+      </tr>
+      <tr>
+        <td><strong>Week 3</strong></td>
+        <td>Intermediate Part 1</td>
+        <td><a href="03_DSA_Intermediate_Q51_120.html" style="color:var(--accent2);text-decoration:none">Q51–90</a></td>
+        <td>12h</td>
+        <td>Sorting · Searching · Stacks · Queues</td>
+        <td><span class="t1">🔥 High</span></td>
+      </tr>
+      <tr>
+        <td><strong>Week 4</strong></td>
+        <td>Intermediate Part 2</td>
+        <td><a href="03_DSA_Intermediate_Q51_120.html" style="color:var(--accent2);text-decoration:none">Q91–120</a></td>
+        <td>12h</td>
+        <td>LinkedLists · Sliding Window</td>
+        <td><span class="t1">🔥 High</span></td>
+      </tr>
+      <tr>
+        <td><strong>Week 5</strong></td>
+        <td>Advanced Part 1</td>
+        <td><a href="04_DSA_Advanced_Q121_180.html" style="color:var(--accent2);text-decoration:none">Q121–157</a></td>
+        <td>13h</td>
+        <td>Trees · Graphs</td>
+        <td><span class="t2">⭐ Senior</span></td>
+      </tr>
+      <tr>
+        <td><strong>Week 6</strong></td>
+        <td>Advanced Part 2 + Review</td>
+        <td><a href="04_DSA_Advanced_Q121_180.html" style="color:var(--accent2);text-decoration:none">Q158–180</a></td>
+        <td>13h</td>
+        <td>DP · Greedy · Full Review</td>
+        <td><span class="t2">⭐ Senior</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- KEY PATTERNS QUICK REF -->
+  <div class="section-title">🎯 Key Patterns — When to Use What</div>
+  <table>
+    <thead><tr><th>Pattern</th><th>Use When</th><th>Example Questions</th><th>Tier</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Two Pointers</strong></td><td>Sorted array, find pair, reverse in-place</td><td>Two Sum, Reverse Array, Container Water</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>Sliding Window</strong></td><td>Substring, subarray with constraint</td><td>Longest substring, Max sum subarray of size K</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>Binary Search</strong></td><td>Sorted array, search answer in range</td><td>Rotated array search, Kth smallest, Median</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>Hash Map</strong></td><td>Frequency count, lookup O(1), grouping</td><td>Two Sum, Anagram, Freq count</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>Stack</strong></td><td>Matching pairs, next greater, expression eval</td><td>Valid parentheses, NGE, Min Stack</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>Fast/Slow Pointer</strong></td><td>Cycle detection, find middle</td><td>Detect cycle, Palindrome LL, Middle</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>DFS on Trees</strong></td><td>Path problems, traversal, tree properties</td><td>Max depth, LCA, Path Sum, Balanced</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>BFS on Graph/Tree</strong></td><td>Shortest path, level order, multi-source spread</td><td>Level order, Islands, Rotting Oranges</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>1D DP</strong></td><td>Sequence, choices at each step</td><td>Climb stairs, House Robber, Coin change</td><td><span class="t1">T1</span></td></tr>
+      <tr><td><strong>2D DP</strong></td><td>Two sequences, grid paths</td><td>LCS, Edit distance, Unique paths</td><td><span class="t2">T2</span></td></tr>
+      <tr><td><strong>Topological Sort</strong></td><td>Task dependencies, ordering</td><td>Course Schedule, Build order</td><td><span class="t2">T2</span></td></tr>
+      <tr><td><strong>Union-Find</strong></td><td>Connected components, cycle in undirected graph</td><td>Number of components, Graph valid tree</td><td><span class="t2">T2</span></td></tr>
+      <tr><td><strong>Min Heap</strong></td><td>Kth largest, top K, merge K sorted</td><td>Kth largest, Merge K lists, Meeting rooms</td><td><span class="t2">T2</span></td></tr>
+      <tr><td><strong>Monotonic Stack</strong></td><td>Next greater/smaller, span</td><td>Daily temperatures, Largest in histogram</td><td><span class="t2">T2</span></td></tr>
+      <tr><td><strong>Greedy</strong></td><td>Local optimum = global optimum</td><td>Activity selection, Jump game, Task scheduler</td><td><span class="t2">T2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- EXPERIENCE NOTES -->
+  <div class="section-title">👤 12 YOE Senior Strategy Notes</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
+      <h3 style="color:var(--accent2);font-size:.95rem;margin-bottom:1rem">✅ What to emphasize</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;font-size:.82rem;color:var(--muted)">
+        <li>✔ Connect DSA answers to real DS/ML/GenAI systems</li>
+        <li>✔ Explain time/space tradeoffs — not just give solution</li>
+        <li>✔ Mention production concerns: memory, concurrency</li>
+        <li>✔ Optimize first, then code — show senior thinking</li>
+        <li>✔ Trees → Decision Trees; Graphs → GNN, RecSys; DP → Optimization</li>
+        <li>✔ LRU Cache → caching layers in ML serving</li>
+        <li>✔ Sliding Window → stream processing in data pipelines</li>
+      </ul>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
+      <h3 style="color:var(--red);font-size:.95rem;margin-bottom:1rem">❌ Common mistakes to avoid</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;font-size:.82rem;color:var(--muted)">
+        <li>✗ Don't start coding before understanding the problem</li>
+        <li>✗ Don't skip edge cases: empty input, null, single element</li>
+        <li>✗ Don't confuse sorted vs unsorted input assumptions</li>
+        <li>✗ Don't use O(n²) when O(n) is achievable with HashMap</li>
+        <li>✗ Don't forget to handle negative numbers in sum problems</li>
+        <li>✗ Don't use global variables — use parameters + return</li>
+        <li>✗ Don't panic on Hard questions — start with brute force</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Built for Interview Preparation · 12 YOE · DS / ML / GenAI · Captive & Product Companies (Non-FAANG) ·
+  <a href="01_DSA_Roadmap.html">Start with the Roadmap →</a>
+</footer>
+
+<script>
+// Aggregate progress from all 3 phase stores
+function getProgress() {
+  let total = 180, done = 0;
+  ['dsa-p1-done','dsa-p2-done','dsa-p3-done'].forEach(key => {
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    done += Object.values(data).filter(Boolean).length;
+  });
+  return {total, done};
+}
+function updateProgress() {
+  const {total, done} = getProgress();
+  document.getElementById('total-done').textContent = done;
+  document.getElementById('total-pct').textContent = Math.round(done/total*100) + '%';
+}
+updateProgress();
+// Refresh every 5 seconds in case user has other tabs open
+setInterval(updateProgress, 5000);
+</script>
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DSA Phase 1 — Beginner Q1–50 | Arrays · Strings · Hashing · Math</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252840;--accent:#7c3aed;--accent2:#06b6d4;--green:#10b981;--warn:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--border:#2d3748}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif}
+  header{background:linear-gradient(135deg,#1a1d2e,#252840);border-bottom:1px solid var(--border);padding:1.5rem 2rem;position:sticky;top:0;z-index:100}
+  .hdr-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+  header h1{font-size:1.3rem;font-weight:800}
+  header p{font-size:.75rem;color:var(--muted)}
+  .hdr-stats{display:flex;gap:1.5rem}
+  .stat .n{font-size:1.3rem;font-weight:800;color:var(--accent2);text-align:center}
+  .stat .l{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .progress-bar{background:var(--surface);padding:.6rem 2rem;border-bottom:1px solid var(--border)}
+  .pb-inner{max-width:1300px;margin:0 auto}
+  .pb-row{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.3rem}
+  .track{background:var(--border);border-radius:999px;height:6px;overflow:hidden}
+  .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width .4s}
+  .controls{max-width:1300px;margin:1.25rem auto;padding:0 2rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+  .search{flex:1;min-width:200px;position:relative}
+  .search input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.6rem 1rem .6rem 2.4rem;border-radius:8px;font-size:.85rem;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search .ico{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.9rem}
+  .filters{display:flex;gap:.4rem;flex-wrap:wrap}
+  .fb{padding:.4rem .9rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:.78rem;transition:all .2s}
+  .fb:hover,.fb.active{border-color:var(--accent);color:var(--accent);background:rgba(124,58,237,.1)}
+  .fb.done.active{border-color:var(--green);color:var(--green);background:rgba(16,185,129,.1)}
+  .main{max-width:1300px;margin:0 auto;padding:0 2rem 4rem;display:grid;grid-template-columns:220px 1fr;gap:2rem}
+  .sidebar{position:sticky;top:110px;height:calc(100vh - 150px);overflow-y:auto}
+  .sidebar::-webkit-scrollbar{width:3px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
+  .snav{display:flex;flex-direction:column;gap:.3rem}
+  .snav-item{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;border-radius:8px;cursor:pointer;border:1px solid transparent;color:var(--muted);font-size:.82rem;text-decoration:none;transition:all .2s}
+  .snav-item:hover{background:var(--surface);color:var(--text)}
+  .snav-item.active{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.35);color:var(--accent)}
+  .snav-badge{background:var(--surface2);color:var(--muted);font-size:.68rem;padding:.1rem .4rem;border-radius:10px}
+  .content{display:flex;flex-direction:column;gap:2rem}
+  .section{scroll-margin-top:115px}
+  .sec-header{background:var(--surface);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap.75rem}
+  .sec-header h2{font-size:1.1rem;font-weight:700}
+  .sec-header p{font-size:.78rem;color:var(--muted);margin-top:.2rem}
+  .sec-meta{margin-left:auto;display:flex;gap:.5rem;align-items:center}
+  .q-list{display:flex;flex-direction:column;gap:.65rem}
+  .q-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s,transform .2s;cursor:pointer}
+  .q-card:hover{border-color:var(--accent);transform:translateX(3px)}
+  .q-card.done{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.03)}
+  .q-top{display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:center;padding:.85rem 1.1rem}
+  .chk{width:20px;height:20px;border:2px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+  .q-card.done .chk{background:var(--green);border-color:var(--green)}
+  .chk-svg{display:none}
+  .q-card.done .chk-svg{display:block}
+  .q-title{font-size:.9rem;font-weight:600}
+  .q-card.done .q-title{text-decoration:line-through;color:var(--muted)}
+  .q-meta{display:flex;gap:.4rem;align-items:center;flex-shrink:0}
+  .diff{font-size:.7rem;font-weight:700;padding:.2rem .55rem;border-radius:6px}
+  .diff.Easy{background:rgba(16,185,129,.15);color:var(--green)}
+  .diff.Medium{background:rgba(245,158,11,.15);color:var(--warn)}
+  .diff.Hard{background:rgba(239,68,68,.15);color:var(--red)}
+  .tier-badge{font-size:.65rem;padding:.15rem .45rem;border-radius:10px}
+  .t1{background:rgba(239,68,68,.12);color:#fca5a5}
+  .t2{background:rgba(245,158,11,.12);color:#fcd34d}
+  .t3{background:rgba(16,185,129,.12);color:#6ee7b7}
+  .q-expand{background:var(--surface2);padding:1rem 1.1rem;border-top:1px solid var(--border);display:none}
+  .q-card.open .q-expand{display:block}
+  pre{background:#0d0f1a;border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;overflow-x:auto;font-size:.8rem;font-family:'Consolas','Monaco',monospace;color:#e2e8f0;margin:.6rem 0}
+  .complexity-row{display:flex;gap:1.5rem;font-size:.75rem;color:var(--muted);margin-top:.5rem}
+  .complexity-row span strong{color:var(--accent2)}
+  .hidden{display:none!important}
+  @media(max-width:850px){.main{grid-template-columns:1fr}.sidebar{position:static;height:auto}.snav{flex-direction:row;flex-wrap:wrap}}
+  .nav-bar{background:var(--surface);border-top:1px solid var(--border);padding:1rem 2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .nav-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem 1.25rem;color:var(--text);text-decoration:none;font-size:.82rem;transition:all .2s}
+  .nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .freq-tag{font-size:.68rem;padding:.15rem .45rem;border-radius:10px}
+  .fh{background:rgba(239,68,68,.12);color:#fca5a5}
+  .fm{background:rgba(245,158,11,.12);color:#fcd34d}
+  .fl{background:rgba(16,185,129,.12);color:#6ee7b7}
+</style>
+</head>
+<body>
+<header>
+  <div class="hdr-inner">
+    <div><h1>📦 Phase 1: Beginner — Q1 to Q50</h1><p>Arrays · Strings · Hashing · Two Pointers · Math | Click any question to see the solution</p></div>
+    <div class="hdr-stats">
+      <div class="stat"><div class="n" id="tot">50</div><div class="l">Questions</div></div>
+      <div class="stat"><div class="n" id="dn">0</div><div class="l">Done</div></div>
+      <div class="stat"><div class="n" id="pct">0%</div><div class="l">Progress</div></div>
+    </div>
+  </div>
+</header>
+<div class="progress-bar">
+  <div class="pb-inner">
+    <div class="pb-row"><span>Phase 1 Progress</span><span id="pt">0 / 50</span></div>
+    <div class="track"><div class="fill" id="fill" style="width:0%"></div></div>
+  </div>
+</div>
+<div class="controls">
+  <div class="search"><span class="ico">🔍</span><input type="text" id="si" placeholder="Search questions..."/></div>
+  <div class="filters">
+    <button class="fb active" data-f="all">All</button>
+    <button class="fb" data-f="Easy">Easy</button>
+    <button class="fb" data-f="Medium">Medium</button>
+    <button class="fb done" data-f="done">✓ Done</button>
+    <button class="fb" data-f="pending">Pending</button>
+  </div>
+</div>
+<div class="main">
+  <nav class="sidebar"><div class="snav" id="snav"></div></nav>
+  <div class="content" id="content"></div>
+</div>
+<div class="nav-bar">
+  <a class="nav-btn" href="01_DSA_Roadmap.html">← Roadmap</a>
+  <a class="nav-btn" href="03_DSA_Intermediate_Q51_120.html">Phase 2: Q51–120 →</a>
+  <a class="nav-btn" href="00_Master_Index.html">🏠 Master Index</a>
+</div>
+<script>
+const sections = [
+  {
+    id:"arrays", title:"Arrays", range:"Q1–Q15", emoji:"📦",
+    color:"#7c3aed",
+    tip:"Most asked in captive centers. Reverse, rotate, duplicates — know these in your sleep.",
+    questions:[
+      {n:1,title:"Reverse an array",diff:"Easy",tier:1,freq:"Very High",
+       code:`def reverse_array(arr: list) -> list:
+    left, right = 0, len(arr) - 1
+    while left < right:
+        arr[left], arr[right] = arr[right], arr[left]
+        left += 1
+        right -= 1
+    return arr
+
+# [1, 2, 3, 4, 5] → [5, 4, 3, 2, 1]`,time:"O(n)",space:"O(1)",pattern:"Two Pointers"},
+      {n:2,title:"Find the second largest element",diff:"Easy",tier:1,freq:"High",
+       code:`def second_largest(arr: list) -> int:
+    if len(arr) < 2:
+        return -1
+    first = second = float('-inf')
+    for num in arr:
+        if num > first:
+            second = first
+            first = num
+        elif num > second and num != first:
+            second = num
+    return second if second != float('-inf') else -1
+
+# [10, 5, 8, 12, 3] → 10`,time:"O(n)",space:"O(1)",pattern:"One Pass"},
+      {n:3,title:"Rotate array by k positions",diff:"Easy",tier:1,freq:"High",
+       code:`def rotate_array(arr: list, k: int) -> list:
+    k = k % len(arr)
+    arr.reverse()
+    arr[:k] = reversed(arr[:k])
+    arr[k:] = reversed(arr[k:])
+    return arr
+
+# [1, 2, 3, 4, 5], k=2 → [4, 5, 1, 2, 3]`,time:"O(n)",space:"O(1)",pattern:"3-Reverse Trick"},
+      {n:4,title:"Find duplicates in array",diff:"Easy",tier:1,freq:"High",
+       code:`def find_duplicates(arr: list) -> list:
+    seen = set()
+    duplicates = set()
+    for num in arr:
+        if num in seen:
+            duplicates.add(num)
+        seen.add(num)
+    return list(duplicates)
+
+# [1, 2, 2, 3, 3, 3] → [2, 3]`,time:"O(n)",space:"O(n)",pattern:"Hash Set"},
+      {n:5,title:"Move all zeros to the end",diff:"Easy",tier:1,freq:"High",
+       code:`def move_zeros(arr: list) -> list:
+    non_zero_idx = 0
+    for i in range(len(arr)):
+        if arr[i] != 0:
+            arr[non_zero_idx], arr[i] = arr[i], arr[non_zero_idx]
+            non_zero_idx += 1
+    return arr
+
+# [1, 0, 2, 0, 3] → [1, 2, 3, 0, 0]`,time:"O(n)",space:"O(1)",pattern:"Two Pointers"},
+      {n:6,title:"Find missing number (1 to N)",diff:"Easy",tier:1,freq:"High",
+       code:`def find_missing(arr: list) -> int:
+    n = len(arr) + 1
+    expected_sum = n * (n + 1) // 2
+    actual_sum = sum(arr)
+    return expected_sum - actual_sum
+
+# [1, 2, 4, 5] → 3`,time:"O(n)",space:"O(1)",pattern:"Math / XOR"},
+      {n:7,title:"Find maximum product of two elements",diff:"Easy",tier:2,freq:"Medium",
+       code:`def max_product(arr: list) -> int:
+    if len(arr) < 2:
+        return -1
+    arr.sort()
+    return max(arr[0] * arr[1], arr[-1] * arr[-2])
+
+# [1, 5, 0, 3, 4, 5] → 25 (5 * 5)`,time:"O(n log n)",space:"O(1)",pattern:"Sort + Boundary"},
+      {n:8,title:"Merge two sorted arrays",diff:"Easy",tier:1,freq:"High",
+       code:`def merge_sorted(arr1: list, arr2: list) -> list:
+    result = []
+    i = j = 0
+    while i < len(arr1) and j < len(arr2):
+        if arr1[i] <= arr2[j]:
+            result.append(arr1[i]); i += 1
+        else:
+            result.append(arr2[j]); j += 1
+    result.extend(arr1[i:])
+    result.extend(arr2[j:])
+    return result
+
+# [1, 3, 5], [2, 4, 6] → [1, 2, 3, 4, 5, 6]`,time:"O(n+m)",space:"O(n+m)",pattern:"Two Pointers"},
+      {n:9,title:"Find peak element",diff:"Easy",tier:2,freq:"Medium",
+       code:`def find_peak(arr: list) -> int:
+    for i in range(len(arr)):
+        if (i == 0 or arr[i] > arr[i-1]) and \
+           (i == len(arr)-1 or arr[i] > arr[i+1]):
+            return arr[i]
+    return -1
+
+# [1, 3, 20, 4, 1, 0] → 20`,time:"O(n)",space:"O(1)",pattern:"Linear Scan"},
+      {n:10,title:"Count pairs with given sum",diff:"Easy",tier:1,freq:"High",
+       code:`def count_pairs(arr: list, target: int) -> int:
+    seen = set()
+    count = 0
+    for num in arr:
+        if target - num in seen:
+            count += 1
+        seen.add(num)
+    return count
+
+# [1, 5, 7, -1, 5], target=6 → 2`,time:"O(n)",space:"O(n)",pattern:"Hash Set"},
+      {n:11,title:"Find majority element (> n/2 times)",diff:"Easy",tier:1,freq:"High",
+       code:`def majority_element(arr: list) -> int:
+    count = 0
+    candidate = None
+    for num in arr:
+        if count == 0:
+            candidate = num
+        count += (1 if num == candidate else -1)
+    return candidate
+
+# [3, 2, 3] → 3  (Boyer-Moore Voting)`,time:"O(n)",space:"O(1)",pattern:"Boyer-Moore Voting"},
+      {n:12,title:"Remove duplicates from sorted array",diff:"Easy",tier:1,freq:"High",
+       code:`def remove_duplicates(arr: list) -> int:
+    if not arr:
+        return 0
+    idx = 0
+    for i in range(1, len(arr)):
+        if arr[i] != arr[idx]:
+            idx += 1
+            arr[idx] = arr[i]
+    return idx + 1
+
+# [1, 1, 2, 2, 3] → 3, arr=[1, 2, 3, ...]`,time:"O(n)",space:"O(1)",pattern:"Two Pointers"},
+      {n:13,title:"Intersection of two arrays",diff:"Easy",tier:1,freq:"High",
+       code:`def intersection(arr1: list, arr2: list) -> list:
+    set1 = set(arr1)
+    result = []
+    for num in arr2:
+        if num in set1 and num not in result:
+            result.append(num)
+    return result
+
+# [1, 2, 2, 1], [2, 2] → [2]`,time:"O(n+m)",space:"O(n)",pattern:"Hash Set"},
+      {n:14,title:"Maximum subarray sum — Kadane's Algorithm",diff:"Medium",tier:1,freq:"Very High",
+       code:`def max_subarray_sum(arr: list) -> int:
+    max_sum = current_sum = arr[0]
+    for num in arr[1:]:
+        current_sum = max(num, current_sum + num)
+        max_sum = max(max_sum, current_sum)
+    return max_sum
+
+# [-2, 1, -3, 4, -1, 2, 1, -5, 4] → 6`,time:"O(n)",space:"O(1)",pattern:"Kadane's / DP"},
+      {n:15,title:"Separate even and odd numbers",diff:"Easy",tier:2,freq:"Medium",
+       code:`def separate_even_odd(arr: list) -> list:
+    left = 0
+    for i in range(len(arr)):
+        if arr[i] % 2 == 0:
+            arr[left], arr[i] = arr[i], arr[left]
+            left += 1
+    return arr
+
+# [1, 2, 3, 4, 5, 6] → [2, 4, 6, 1, 3, 5]`,time:"O(n)",space:"O(1)",pattern:"Partition"},
+    ]
+  },
+  {
+    id:"strings", title:"Strings", range:"Q16–Q30", emoji:"🔤",
+    color:"#0891b2",
+    tip:"String questions are extremely common in ALL companies. Palindrome + anagram are asked in 90% of captive center interviews.",
+    questions:[
+      {n:16,title:"Reverse a string",diff:"Easy",tier:1,freq:"Very High",
+       code:`def reverse_string(s: str) -> str:
+    return s[::-1]
+
+# "hello" → "olleh"`,time:"O(n)",space:"O(n)",pattern:"Slice"},
+      {n:17,title:"Check if string is palindrome",diff:"Easy",tier:1,freq:"Very High",
+       code:`def is_palindrome(s: str) -> bool:
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+
+# "racecar" → True, "hello" → False`,time:"O(n)",space:"O(n)",pattern:"Two Pointers"},
+      {n:18,title:"Check if two strings are anagrams",diff:"Easy",tier:1,freq:"High",
+       code:`from collections import Counter
+
+def are_anagrams(s1: str, s2: str) -> bool:
+    return Counter(s1.lower()) == Counter(s2.lower())
+
+# "listen", "silent" → True`,time:"O(n)",space:"O(1)",pattern:"Frequency Count"},
+      {n:19,title:"Find first non-repeating character",diff:"Easy",tier:1,freq:"High",
+       code:`from collections import Counter
+
+def first_non_repeating(s: str) -> str:
+    count = Counter(s)
+    for ch in s:
+        if count[ch] == 1:
+            return ch
+    return ""
+
+# "aabbcde" → "c"`,time:"O(n)",space:"O(1)",pattern:"Counter + Scan"},
+      {n:20,title:"Count vowels and consonants",diff:"Easy",tier:2,freq:"Medium",
+       code:`def count_vowels_consonants(s: str) -> dict:
+    vowels = set("aeiouAEIOU")
+    v = sum(1 for c in s if c in vowels)
+    c = sum(1 for c in s if c.isalpha() and c not in vowels)
+    return {"vowels": v, "consonants": c}
+
+# "Hello World" → {"vowels": 3, "consonants": 7}`,time:"O(n)",space:"O(1)",pattern:"Set Lookup"},
+      {n:21,title:"Remove duplicate characters from string",diff:"Easy",tier:1,freq:"High",
+       code:`def remove_duplicates(s: str) -> str:
+    seen = set()
+    return "".join(c for c in s if not (c in seen or seen.add(c)))
+
+# "programming" → "progamin"`,time:"O(n)",space:"O(n)",pattern:"Ordered Set"},
+      {n:22,title:"Reverse words in a sentence",diff:"Easy",tier:1,freq:"High",
+       code:`def reverse_words(s: str) -> str:
+    return " ".join(s.split()[::-1])
+
+# "Hello World Python" → "Python World Hello"`,time:"O(n)",space:"O(n)",pattern:"Split + Reverse"},
+      {n:23,title:"Check if string is rotation of another",diff:"Easy",tier:2,freq:"Medium",
+       code:`def is_rotation(s1: str, s2: str) -> bool:
+    if len(s1) != len(s2):
+        return False
+    return s2 in s1 + s1
+
+# "waterbottle", "erbottlewat" → True`,time:"O(n)",space:"O(n)",pattern:"Concatenation"},
+      {n:24,title:"Longest substring without repeating characters",diff:"Medium",tier:1,freq:"High",
+       code:`def longest_substring(s: str) -> int:
+    char_index = {}
+    max_len = 0
+    start = 0
+    for i, char in enumerate(s):
+        if char in char_index and char_index[char] >= start:
+            start = char_index[char] + 1
+        char_index[char] = i
+        max_len = max(max_len, i - start + 1)
+    return max_len
+
+# "abcabcbb" → 3 ("abc")`,time:"O(n)",space:"O(min(n,26))",pattern:"Sliding Window"},
+      {n:25,title:"Character frequency counter",diff:"Easy",tier:1,freq:"High",
+       code:`from collections import Counter
+
+def char_frequency(s: str) -> dict:
+    return dict(Counter(s))
+
+# "hello" → {'h':1, 'e':1, 'l':2, 'o':1}`,time:"O(n)",space:"O(1)",pattern:"Counter"},
+      {n:26,title:"Check if string has all unique characters",diff:"Easy",tier:1,freq:"High",
+       code:`def has_unique_chars(s: str) -> bool:
+    return len(s) == len(set(s))
+
+# "abcdef" → True, "hello" → False`,time:"O(n)",space:"O(1)",pattern:"Set"},
+      {n:27,title:"Capitalize first character of each word",diff:"Easy",tier:2,freq:"Medium",
+       code:`def capitalize_words(s: str) -> str:
+    return " ".join(word.capitalize() for word in s.split())
+
+# "hello world" → "Hello World"`,time:"O(n)",space:"O(n)",pattern:"String Transform"},
+      {n:28,title:"Count occurrences of substring",diff:"Easy",tier:2,freq:"Medium",
+       code:`def count_substring(s: str, sub: str) -> int:
+    count = 0
+    start = 0
+    while True:
+        start = s.find(sub, start)
+        if start == -1:
+            break
+        count += 1
+        start += 1
+    return count
+
+# "ababa", "aba" → 2 (overlapping)`,time:"O(n*m)",space:"O(1)",pattern:"Sliding Scan"},
+      {n:29,title:"Remove spaces from string",diff:"Easy",tier:3,freq:"Low",
+       code:`def remove_spaces(s: str) -> str:
+    return s.replace(" ", "")
+
+# "hello world" → "helloworld"`,time:"O(n)",space:"O(n)",pattern:"Replace"},
+      {n:30,title:"Check if string is valid number",diff:"Easy",tier:2,freq:"Medium",
+       code:`def is_valid_number(s: str) -> bool:
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+# "123" → True, "12.34" → True, "abc" → False`,time:"O(n)",space:"O(1)",pattern:"Try/Except"},
+    ]
+  },
+  {
+    id:"hashing", title:"Hashing & Two Pointers", range:"Q31–Q40", emoji:"🗂️",
+    color:"#059669",
+    tip:"Two Sum is asked in 100% of interviews. Valid Parentheses in 95%. Know these cold.",
+    questions:[
+      {n:31,title:"Two Sum",diff:"Easy",tier:1,freq:"Very High",
+       code:`def two_sum(arr: list, target: int) -> list:
+    seen = {}
+    for i, num in enumerate(arr):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
+    return []
+
+# [2, 7, 11, 15], target=9 → [0, 1]`,time:"O(n)",space:"O(n)",pattern:"Hash Map"},
+      {n:32,title:"Three Sum",diff:"Medium",tier:1,freq:"High",
+       code:`def three_sum(arr: list, target: int = 0) -> list:
+    arr.sort()
+    result = []
+    for i in range(len(arr) - 2):
+        if i > 0 and arr[i] == arr[i-1]:
+            continue
+        left, right = i + 1, len(arr) - 1
+        while left < right:
+            total = arr[i] + arr[left] + arr[right]
+            if total == 0:
+                result.append([arr[i], arr[left], arr[right]])
+                left += 1; right -= 1
+            elif total < 0: left += 1
+            else: right -= 1
+    return result
+
+# [-1, 0, 1, 2, -1, -4] → [[-1,-1,2],[-1,0,1]]`,time:"O(n²)",space:"O(1)",pattern:"Sort + Two Pointers"},
+      {n:33,title:"Container with most water",diff:"Medium",tier:1,freq:"High",
+       code:`def max_area(heights: list) -> int:
+    left, right = 0, len(heights) - 1
+    max_area = 0
+    while left < right:
+        area = (right - left) * min(heights[left], heights[right])
+        max_area = max(max_area, area)
+        if heights[left] < heights[right]:
+            left += 1
+        else:
+            right -= 1
+    return max_area
+
+# [1, 8, 6, 2, 5, 4, 8, 3, 7] → 49`,time:"O(n)",space:"O(1)",pattern:"Two Pointers Greedy"},
+      {n:34,title:"Valid parentheses",diff:"Easy",tier:1,freq:"Very High",
+       code:`def is_valid_parentheses(s: str) -> bool:
+    stack = []
+    pairs = {'(': ')', '{': '}', '[': ']'}
+    for char in s:
+        if char in pairs:
+            stack.append(char)
+        else:
+            if not stack or pairs[stack.pop()] != char:
+                return False
+    return len(stack) == 0
+
+# "()" → True, "([)]" → False`,time:"O(n)",space:"O(n)",pattern:"Stack"},
+      {n:35,title:"Trapping rain water",diff:"Medium",tier:2,freq:"Medium",
+       code:`def trap_water(heights: list) -> int:
+    if not heights:
+        return 0
+    left_max = [0] * len(heights)
+    right_max = [0] * len(heights)
+    left_max[0] = heights[0]
+    right_max[-1] = heights[-1]
+    for i in range(1, len(heights)):
+        left_max[i] = max(left_max[i-1], heights[i])
+    for i in range(len(heights)-2, -1, -1):
+        right_max[i] = max(right_max[i+1], heights[i])
+    return sum(min(left_max[i], right_max[i]) - heights[i]
+               for i in range(len(heights)))
+
+# [0,1,0,2,1,0,1,3,2,1,2,1] → 6`,time:"O(n)",space:"O(n)",pattern:"Prefix/Suffix Max"},
+      {n:36,title:"Merge sorted array in-place",diff:"Medium",tier:1,freq:"High",
+       code:`def merge_sorted_inplace(nums1, m, nums2, n):
+    p1, p2, p = m - 1, n - 1, m + n - 1
+    while p1 >= 0 and p2 >= 0:
+        if nums1[p1] > nums2[p2]:
+            nums1[p] = nums1[p1]; p1 -= 1
+        else:
+            nums1[p] = nums2[p2]; p2 -= 1
+        p -= 1
+    while p2 >= 0:
+        nums1[p] = nums2[p2]; p2 -= 1; p -= 1
+
+# [1,2,3,0,0,0], m=3, [2,5,6], n=3 → [1,2,2,3,5,6]`,time:"O(m+n)",space:"O(1)",pattern:"Two Pointers from End"},
+      {n:37,title:"Squares of a sorted array",diff:"Easy",tier:2,freq:"Medium",
+       code:`def sorted_squares(arr: list) -> list:
+    result = [0] * len(arr)
+    left, right = 0, len(arr) - 1
+    for i in range(len(arr) - 1, -1, -1):
+        if abs(arr[left]) > abs(arr[right]):
+            result[i] = arr[left] ** 2; left += 1
+        else:
+            result[i] = arr[right] ** 2; right -= 1
+    return result
+
+# [-4, -1, 0, 3, 10] → [0, 1, 9, 16, 100]`,time:"O(n)",space:"O(n)",pattern:"Two Pointers"},
+      {n:38,title:"Valid palindrome (alphanumeric only)",diff:"Easy",tier:1,freq:"High",
+       code:`def is_valid_palindrome(s: str) -> bool:
+    s = ''.join(c.lower() for c in s if c.isalnum())
+    return s == s[::-1]
+
+# "A man, a plan, a canal: Panama" → True`,time:"O(n)",space:"O(n)",pattern:"Clean + Reverse"},
+      {n:39,title:"Remove nth node from end of list",diff:"Medium",tier:2,freq:"Medium",
+       code:`class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val; self.next = next
+
+def remove_nth_from_end(head, n):
+    dummy = ListNode(0)
+    dummy.next = head
+    first = second = dummy
+    for _ in range(n + 1):
+        first = first.next
+    while first:
+        first = first.next
+        second = second.next
+    second.next = second.next.next
+    return dummy.next`,time:"O(n)",space:"O(1)",pattern:"Two Pointers (Gap N)"},
+      {n:40,title:"Sliding window maximum",diff:"Medium",tier:2,freq:"Medium",
+       code:`from collections import deque
+
+def sliding_window_max(arr: list, k: int) -> list:
+    dq = deque()  # stores (val, index)
+    result = []
+    for i in range(len(arr)):
+        if dq and dq[0][1] < i - k + 1:
+            dq.popleft()
+        while dq and dq[-1][0] <= arr[i]:
+            dq.pop()
+        dq.append((arr[i], i))
+        if i >= k - 1:
+            result.append(dq[0][0])
+    return result
+
+# [1,3,-1,-3,5,3,6,7], k=3 → [3,3,5,5,6,7]`,time:"O(n)",space:"O(k)",pattern:"Monotonic Deque"},
+    ]
+  },
+  {
+    id:"math", title:"Basic Math", range:"Q41–Q50", emoji:"🔢",
+    color:"#d97706",
+    tip:"Math questions are asked in 80% of TCS, Infosys, Accenture interviews. Fibonacci + Prime + Factorial are must-know.",
+    questions:[
+      {n:41,title:"Fibonacci number (iterative)",diff:"Easy",tier:1,freq:"High",
+       code:`def fibonacci(n: int) -> int:
+    if n <= 1:
+        return n
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, a + b
+    return b
+
+# fibonacci(6) → 8  (0,1,1,2,3,5,8)`,time:"O(n)",space:"O(1)",pattern:"Iteration"},
+      {n:42,title:"Check if number is prime",diff:"Easy",tier:1,freq:"High",
+       code:`def is_prime(n: int) -> bool:
+    if n < 2: return False
+    if n == 2: return True
+    if n % 2 == 0: return False
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+# is_prime(17) → True, is_prime(15) → False`,time:"O(√n)",space:"O(1)",pattern:"Trial Division"},
+      {n:43,title:"Factorial",diff:"Easy",tier:2,freq:"Medium",
+       code:`def factorial(n: int) -> int:
+    if n <= 1:
+        return 1
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+
+# factorial(5) → 120`,time:"O(n)",space:"O(1)",pattern:"Iteration"},
+      {n:44,title:"Power of number (fast exponentiation)",diff:"Easy",tier:1,freq:"High",
+       code:`def power(x: float, n: int) -> float:
+    if n == 0: return 1.0
+    if n < 0: x = 1 / x; n = -n
+    result = 1.0
+    while n > 0:
+        if n % 2 == 1:
+            result *= x
+        x *= x
+        n //= 2
+    return result
+
+# power(2, 10) → 1024.0`,time:"O(log n)",space:"O(1)",pattern:"Binary Exponentiation"},
+      {n:45,title:"GCD — Greatest Common Divisor",diff:"Easy",tier:2,freq:"Medium",
+       code:`def gcd(a: int, b: int) -> int:
+    while b:
+        a, b = b, a % b
+    return a
+
+# gcd(48, 18) → 6  (Euclidean algorithm)`,time:"O(log min(a,b))",space:"O(1)",pattern:"Euclidean"},
+      {n:46,title:"LCM — Least Common Multiple",diff:"Easy",tier:2,freq:"Medium",
+       code:`def lcm(a: int, b: int) -> int:
+    def gcd(x, y):
+        while y: x, y = y, x % y
+        return x
+    return (a * b) // gcd(a, b)
+
+# lcm(12, 18) → 36`,time:"O(log min(a,b))",space:"O(1)",pattern:"GCD-based"},
+      {n:47,title:"Count digits in a number",diff:"Easy",tier:3,freq:"Low",
+       code:`def count_digits(n: int) -> int:
+    if n == 0: return 1
+    count = 0
+    n = abs(n)
+    while n > 0:
+        count += 1
+        n //= 10
+    return count
+
+# count_digits(12345) → 5`,time:"O(log n)",space:"O(1)",pattern:"Division Loop"},
+      {n:48,title:"Sum of digits",diff:"Easy",tier:2,freq:"Medium",
+       code:`def sum_of_digits(n: int) -> int:
+    n = abs(n)
+    total = 0
+    while n > 0:
+        total += n % 10
+        n //= 10
+    return total
+
+# sum_of_digits(12345) → 15`,time:"O(log n)",space:"O(1)",pattern:"Modulo Loop"},
+      {n:49,title:"Reverse a number",diff:"Easy",tier:2,freq:"Medium",
+       code:`def reverse_number(n: int) -> int:
+    sign = -1 if n < 0 else 1
+    n = abs(n)
+    result = 0
+    while n > 0:
+        result = result * 10 + n % 10
+        n //= 10
+    return sign * result
+
+# reverse_number(12345) → 54321`,time:"O(log n)",space:"O(1)",pattern:"Modulo Loop"},
+      {n:50,title:"Check if number is palindrome",diff:"Easy",tier:2,freq:"Medium",
+       code:`def is_palindrome_number(n: int) -> bool:
+    if n < 0: return False
+    original = n
+    reversed_num = 0
+    while n > 0:
+        reversed_num = reversed_num * 10 + n % 10
+        n //= 10
+    return original == reversed_num
+
+# is_palindrome_number(121) → True`,time:"O(log n)",space:"O(1)",pattern:"Reverse & Compare"},
+    ]
+  }
+];
+
+// State
+const STORE_KEY = 'dsa-p1-done';
+let done = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function totalQ() { return sections.reduce((s,sec)=>s+sec.questions.length,0); }
+function doneCount() { return Object.values(done).filter(Boolean).length; }
+function qKey(sid, n) { return `${sid}::${n}`; }
+function isDone(sid, n) { return !!done[qKey(sid,n)]; }
+
+function toggleDone(sid, n) {
+  const k = qKey(sid, n);
+  done[k] = !done[k];
+  localStorage.setItem(STORE_KEY, JSON.stringify(done));
+  render(); renderSidebar(); updateStats();
+}
+
+function toggleOpen(cardEl) {
+  cardEl.classList.toggle('open');
+}
+
+function updateStats() {
+  const total = totalQ();
+  const d = doneCount();
+  document.getElementById('tot').textContent = total;
+  document.getElementById('dn').textContent = d;
+  document.getElementById('pct').textContent = Math.round(d/total*100)+'%';
+  document.getElementById('fill').style.width = (d/total*100)+'%';
+  document.getElementById('pt').textContent = `${d} / ${total}`;
+}
+
+function freqClass(f) {
+  if(f==='Very High') return 'fh';
+  if(f==='High') return 'fm';
+  return 'fl';
+}
+
+function matches(q, sid) {
+  if(activeFilter==='Easy'||activeFilter==='Medium'||activeFilter==='Hard') {
+    if(q.diff !== activeFilter) return false;
+  }
+  if(activeFilter==='done' && !isDone(sid,q.n)) return false;
+  if(activeFilter==='pending' && isDone(sid,q.n)) return false;
+  if(searchTerm) {
+    const s = searchTerm.toLowerCase();
+    if(!q.title.toLowerCase().includes(s) && !q.pattern.toLowerCase().includes(s)) return false;
+  }
+  return true;
+}
+
+function renderSidebar() {
+  const nav = document.getElementById('snav');
+  nav.innerHTML = sections.map(sec => {
+    const d = sec.questions.filter(q=>isDone(sec.id,q.n)).length;
+    return `<a class="snav-item" href="#${sec.id}">${sec.emoji} ${sec.title}<span class="snav-badge">${d}/${sec.questions.length}</span></a>`;
+  }).join('');
+}
+
+function render() {
+  const content = document.getElementById('content');
+  content.innerHTML = sections.map(sec => {
+    const filtered = sec.questions.filter(q=>matches(q,sec.id));
+    if(!filtered.length) return '';
+    const d = sec.questions.filter(q=>isDone(sec.id,q.n)).length;
+    return `
+<div class="section" id="${sec.id}">
+  <div class="sec-header" style="border-left-color:${sec.color}">
+    <div>
+      <h2>${sec.emoji} ${sec.title} <span style="color:var(--muted);font-weight:400;font-size:.9rem">${sec.range}</span></h2>
+      <p>${sec.tip}</p>
+    </div>
+    <div class="sec-meta">
+      <span style="font-size:.78rem;color:var(--muted)">${d}/${sec.questions.length} done</span>
+    </div>
+  </div>
+  <div class="q-list">
+    ${filtered.map(q => `
+      <div class="q-card ${isDone(sec.id,q.n)?'done':''}" id="qc-${sec.id}-${q.n}">
+        <div class="q-top" onclick="toggleOpen(document.getElementById('qc-${sec.id}-${q.n}'))">
+          <div class="chk" onclick="event.stopPropagation();toggleDone('${sec.id}',${q.n})">
+            <svg class="chk-svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="q-title">Q${q.n}. ${q.title}</div>
+            <div style="display:flex;gap:.4rem;margin-top:.3rem">
+              <span class="freq-tag ${freqClass(q.freq)}">${q.freq} Freq</span>
+              <span style="font-size:.68rem;color:var(--muted);background:var(--surface2);padding:.15rem .45rem;border-radius:10px">${q.pattern}</span>
+            </div>
+          </div>
+          <div class="q-meta">
+            <span class="diff ${q.diff}">${q.diff}</span>
+            <span class="tier-badge t${q.tier}">T${q.tier}</span>
+            <span style="color:var(--muted);font-size:.85rem">▼</span>
+          </div>
+        </div>
+        <div class="q-expand">
+          <pre>${q.code}</pre>
+          <div class="complexity-row">
+            <span><strong>Time:</strong> ${q.time}</span>
+            <span><strong>Space:</strong> ${q.space}</span>
+            <span><strong>Pattern:</strong> ${q.pattern}</span>
+          </div>
+        </div>
+      </div>`).join('')}
+  </div>
+</div>`;
+  }).join('');
+}
+
+document.getElementById('si').addEventListener('input', e => {
+  searchTerm = e.target.value.trim();
+  render();
+});
+document.querySelectorAll('.fb').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.f;
+    render();
+  });
+});
+
+renderSidebar(); render(); updateStats();
+</script>
+</body>
+</html>
